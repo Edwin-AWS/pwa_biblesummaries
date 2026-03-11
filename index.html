@@ -362,7 +362,7 @@
     contEl.style.display='none';
     try {
       if (!summaryCache[mdKey]) {
-        const url = `${BASE_URL}/summaries/${mdKey}.md`;
+        const url = `${S3_BASE_URL}/summaries/${mdKey}.md`;
         const r = await fetch(url);
         if (!r.ok) throw new Error(`HTTP ${r.status} — ${url}`);
         summaryCache[mdKey] = await r.text();
