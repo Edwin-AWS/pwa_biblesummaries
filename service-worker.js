@@ -1,13 +1,12 @@
 // Bible Summaries PWA — Service Worker
-const CACHE_NAME = 'bible-summaries-v1';
+const CACHE_NAME = 'bible-summaries-v3';
 
-// App shell: files to cache immediately on install
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.png',
-  // Summaries (add more as Mateo writes them)
+  './icon-512.png',
   './summaries/Genesis.md',
   './summaries/Exodus.md',
   './summaries/Leviticus.md',
@@ -19,7 +18,6 @@ const APP_SHELL = [
   './summaries/1Samuel.md',
   './summaries/2Samuel.md',
   './summaries/1Kings.md',
-  // External: marked.js
   'https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js',
 ];
 
@@ -31,7 +29,7 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// Activate: clear old caches
+// Activate: clear ALL old caches immediately
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -41,35 +39,19 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// Fetch: cache-first for app files, network-first for Bible API
+// Fetch: NETWORK-FIRST — always try to get fresh content,
+// fall back to cache only when offline
 self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
-
-  // Bible API — always try network, fall back to cache
-  if (url.hostname === 'bible-api.com') {
-    event.respondWith(
-      fetch(event.request)
-        .then(response => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-          return response;
-        })
-        .catch(() => caches.match(event.request))
-    );
-    return;
-  }
-
-  // Everything else: cache-first
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
+    fetch(event.request)
+      .then(response => {
+        // Cache a copy of every successful response
         if (response && response.status === 200) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
         }
         return response;
-      });
-    })
+      })
+      .catch(() => caches.match(event.request))
   );
 });
