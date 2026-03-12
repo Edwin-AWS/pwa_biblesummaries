@@ -438,21 +438,8 @@ console.log('First 5 ## lines:', lines.filter(l => l.startsWith('##')).slice(0,5
     parts.push(chLines.join('\n'));
     if (finalLines.length) parts.push(finalLines.join('\n'));
 
-    return marked.parse(parts.join('\n\n---\n\n'));
+  return marked.parse(parts.join('\n\n---\n\n'));
   }
-    const lines = fullMd.split('\n');
-    const re = new RegExp(`^##\\s+${escRe(book)}\\s+${chNum}(?:\\s|$|\\s*[—\\-])`, 'i');
-    let start = -1;
-    for (let i=0;i<lines.length;i++) { if (re.test(lines[i])) { start=i; break; } }
-    if (start===-1) return `<p style="color:#888;font-style:italic">The summary for ${esc(book)} ${chNum} hasn't been written yet. Check back soon!</p>`;
-
-    const chLines = [lines[start]];
-    for (let i=start+1;i<lines.length;i++) {
-      if (/^##\s/.test(lines[i]) && !/^###/.test(lines[i])) break;
-      chLines.push(lines[i]);
-    }
-    let mdToRender = chLines.join('\n');
-
     if (chNum===1) {
       const introLines=[]; let inIntro=false;
       for (let i=0;i<lines.length;i++) {
