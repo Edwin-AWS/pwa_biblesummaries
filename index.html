@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Study the Bible with summaries by Mateo the Preacher. Multiple versions, offline access.">
   <meta name="theme-color" content="#007BFF">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Bible Summaries by Mateo</title>
 
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 
@@ -106,7 +107,7 @@
     #summaryContent p{line-height:1.85;margin:6px 0 12px;color:var(--text-secondary);font-size:15px;font-family:'Lora',Georgia,serif;}
     #summaryContent strong{color:var(--text-primary);}
     #summaryContent em{font-style:italic;}
-    #summaryContent blockquote{border-left:3px solid var(--accent);background:#f0f8ff;margin:12px 0;padding:10px 16px;border-radius:0 6px 6px 0;font-style:italic;color:var(--text-secondary);}
+    #summaryContent blockquote{border-left:3px solid var(--accent);background:#f0f8ff;margin:12px 0;padding:10px 16px;border-radius:0 6px 6px 0;font-style:italic;color:var(--text-secondary);font-family:'Lora',Georgia,serif;}
     body.dark-mode #summaryContent blockquote{background:#1a2a3a;}
     #summaryContent blockquote.prayer-block{border-left-color:#2563eb;background:#e8f0ff;}
     body.dark-mode #summaryContent blockquote.prayer-block{background:#1a2038;}
@@ -126,7 +127,7 @@
     .offline-indicator{position:fixed;bottom:20px;right:20px;background:#ff9800;color:#fff;padding:10px 18px;border-radius:4px;display:none;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,.3);}
     .offline-indicator.show{display:block;}
 
-    /* Overlay to close menu on outside click */
+    /* Overlay */
     #menuOverlay{display:none;position:fixed;inset:0;z-index:9998;}
     #menuOverlay.active{display:block;}
   </style>
@@ -164,7 +165,6 @@
 
 <!-- Main content -->
 <div class="content">
-  <!-- Left: Summary -->
   <div class="left" id="leftPanel">
     <h2>Scripture Summary</h2>
     <div class="nav-buttons">
@@ -192,7 +192,6 @@
     </div>
   </div>
 
-  <!-- Right: Bible text -->
   <div class="right" id="rightPanel">
     <h2 id="chapterHeading">Chapter Text</h2>
     <div class="nav-buttons">
@@ -212,12 +211,10 @@
 <div class="offline-indicator" id="offlineIndicator">📡 You're offline — cached content only</div>
 
 <script>
-  // ── BASE URL ──────────────────────────────────────────────────
-  // For GitHub Pages: leave as '' (summaries/ folder is in the repo).
-  // For S3: set to 'https://YOUR-BUCKET.s3.REGION.amazonaws.com'
+  // ── Config ────────────────────────────────────────────────────
   const S3_BASE_URL = "https://edwin-aws.github.io/files";
 
-  // ── Service Worker (relative path = works on GH Pages) ───────
+  // ── Service Worker ────────────────────────────────────────────
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./service-worker.js')
@@ -226,7 +223,7 @@
     });
   }
 
-  // Offline indicator
+  // ── Offline indicator ─────────────────────────────────────────
   const offlineEl = document.getElementById('offlineIndicator');
   window.addEventListener('online',  () => offlineEl.classList.remove('show'));
   window.addEventListener('offline', () => offlineEl.classList.add('show'));
@@ -266,13 +263,14 @@
     "1 Samuel":"1Samuel","2 Samuel":"2Samuel","1 Kings":"1Kings"
   };
 
+  // ── Utilities ─────────────────────────────────────────────────
   marked.setOptions({breaks:true, gfm:true});
   const esc   = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 
-  // ── Menu toggle ───────────────────────────────────────────────
+  // ── Menu ──────────────────────────────────────────────────────
   function toggleMenu() {
-    const menu = document.getElementById('dropdownMenu');
+    const menu    = document.getElementById('dropdownMenu');
     const overlay = document.getElementById('menuOverlay');
     const opening = !menu.classList.contains('open');
     menu.classList.toggle('open', opening);
@@ -306,7 +304,7 @@
     bl.appendChild(ul);
   }
 
-  // ── Chapter list under book ───────────────────────────────────
+  // ── Chapter list ──────────────────────────────────────────────
   function toggleChapterList(testament, book, bookLi) {
     const next = bookLi.nextElementSibling;
     if (next && next.classList.contains('chapter-list')) {
@@ -381,36 +379,30 @@
     }
   }
 
-function extractChapterHtml(fullMd, book, chNum) {
+  // ── Extract chapter from full MD ──────────────────────────────
+  function extractChapterHtml(fullMd, book, chNum) {
     const lines = fullMd.split('\n');
+    const re = new RegExp(`^##\\s+${escRe(book)}\\s+${chNum}(?:\\s|$|\\s*[—\\-])`, 'i');
 
-    // Match both "## Genesis 1 — Title" AND "## Chapter 1 — Title"
-   const re = new RegExp(
-  `^##\\s+${escRe(book)}\\s+${chNum}(?:\\s|$|\\s*[—\\-])`, 'i'
-);
-console.log('Regex:', re);
-console.log('First 5 ## lines:', lines.filter(l => l.startsWith('##')).slice(0,5));
-
-    // ── Find this chapter's start line ──────────────────────────
+    // Find chapter start
     let start = -1;
     for (let i = 0; i < lines.length; i++) {
       if (re.test(lines[i])) { start = i; break; }
     }
-
     if (start === -1) {
       return `<p style="color:#888;font-style:italic">
         The summary for ${esc(book)} ${chNum} hasn't been written yet. Check back soon!
       </p>`;
     }
 
-    // ── Extract this chapter's lines ────────────────────────────
+    // Extract chapter lines
     const chLines = [lines[start]];
     for (let i = start + 1; i < lines.length; i++) {
       if (/^##\s/.test(lines[i]) && !/^###/.test(lines[i])) break;
       chLines.push(lines[i]);
     }
 
-    // ── Introduction block ───────────────────────────────────────
+    // Introduction block
     const introLines = [];
     let inIntro = false;
     for (let i = 0; i < lines.length; i++) {
@@ -421,7 +413,7 @@ console.log('First 5 ## lines:', lines.filter(l => l.startsWith('##')).slice(0,5
       }
     }
 
-    // ── Final Summary block ──────────────────────────────────────
+    // Final Summary block
     const finalLines = [];
     let inFinal = false;
     for (let i = 0; i < lines.length; i++) {
@@ -432,26 +424,13 @@ console.log('First 5 ## lines:', lines.filter(l => l.startsWith('##')).slice(0,5
       }
     }
 
-    // ── Assemble ─────────────────────────────────────────────────
+    // Assemble: Intro + Chapter + Final Summary
     const parts = [];
     if (introLines.length) parts.push(introLines.join('\n'));
     parts.push(chLines.join('\n'));
     if (finalLines.length) parts.push(finalLines.join('\n'));
 
-  return marked.parse(parts.join('\n\n---\n\n'));
-  }
-    if (chNum===1) {
-      const introLines=[]; let inIntro=false;
-      for (let i=0;i<lines.length;i++) {
-        if (/^## Introduction/i.test(lines[i])) inIntro=true;
-        if (inIntro) {
-          if (/^## /i.test(lines[i]) && !/^## Introduction/i.test(lines[i])) break;
-          introLines.push(lines[i]);
-        }
-      }
-      if (introLines.length) mdToRender=introLines.join('\n')+'\n\n---\n\n'+mdToRender;
-    }
-    return marked.parse(mdToRender);
+    return marked.parse(parts.join('\n\n---\n\n'));
   }
 
   // ── Bible text ────────────────────────────────────────────────
@@ -472,57 +451,69 @@ console.log('First 5 ## lines:', lines.filter(l => l.startsWith('##')).slice(0,5
         content.innerHTML = data.verses.map(v =>
           `<div class="verse"><span class="verse-number">${v.verse}</span><span class="verse-text">${v.text}</span></div>`
         ).join('');
-      } else { content.innerText = `No verses found for ${currentChapter} in ${version.toUpperCase()}.`; }
+      } else {
+        content.innerText = `No verses found for ${currentChapter} in ${version.toUpperCase()}.`;
+      }
     } catch(err) {
       content.innerHTML=`<p style="color:red"><strong>Could not load ${esc(currentChapter)}</strong><br><small>${esc(err.message)}</small></p>`;
     }
   }
+
   function onVersionChange() {
     if (document.getElementById('rightPanel').classList.contains('open') && currentChapter) loadChapter();
   }
 
   // ── Toggle chapter panel ──────────────────────────────────────
   function toggleChapter() {
-    const left=document.getElementById('leftPanel'), right=document.getElementById('rightPanel');
-    const open=right.classList.contains('open');
-    right.classList.toggle('open',!open); left.classList.toggle('shrink',!open);
+    const left  = document.getElementById('leftPanel');
+    const right = document.getElementById('rightPanel');
+    const open  = right.classList.contains('open');
+    right.classList.toggle('open', !open);
+    left.classList.toggle('shrink', !open);
     if (!open && currentChapter) loadChapter();
   }
 
   // ── Navigate prev/next ────────────────────────────────────────
   function navigateChapter(dir) {
     if (!currentBook) return;
-    const maxCh=bibleStructure[currentTestament][currentBook];
-    const next=currentChapterNum+dir;
-    if (next<1||next>maxCh) return;
-    const chList=document.querySelector('.chapter-list');
-    if (chList) { const t=chList.querySelectorAll('li')[next-1]; if (t){t.click();return;} }
+    const maxCh = bibleStructure[currentTestament][currentBook];
+    const next  = currentChapterNum + dir;
+    if (next < 1 || next > maxCh) return;
+    const chList = document.querySelector('.chapter-list');
+    if (chList) {
+      const t = chList.querySelectorAll('li')[next - 1];
+      if (t) { t.click(); return; }
+    }
     selectChapter(currentBook, next);
   }
 
   // ── Search ────────────────────────────────────────────────────
-  document.getElementById('searchInput').addEventListener('input', function(){
-    const q=this.value.toLowerCase();
-    document.querySelectorAll('#booksList > ul > li').forEach(li=>{
-      li.style.display=li.dataset.book.toLowerCase().includes(q)?'':'none';
+  document.getElementById('searchInput').addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('#booksList > ul > li').forEach(li => {
+      li.style.display = li.dataset.book.toLowerCase().includes(q) ? '' : 'none';
     });
   });
 
   // ── Comments / Questions ──────────────────────────────────────
-  function addComment(){
-    const inp=document.getElementById('commentInput');
+  function addComment() {
+    const inp = document.getElementById('commentInput');
     if (!inp.value.trim()) return;
-    const p=document.createElement('p'); p.textContent=inp.value.trim();
-    document.getElementById('commentsList').appendChild(p); inp.value='';
+    const p = document.createElement('p');
+    p.textContent = inp.value.trim();
+    document.getElementById('commentsList').appendChild(p);
+    inp.value = '';
   }
-  function addQuestion(){
-    const inp=document.getElementById('questionInput');
+  function addQuestion() {
+    const inp = document.getElementById('questionInput');
     if (!inp.value.trim()) return;
-    const p=document.createElement('p'); p.textContent=inp.value.trim();
-    document.getElementById('questionsList').appendChild(p); inp.value='';
+    const p = document.createElement('p');
+    p.textContent = inp.value.trim();
+    document.getElementById('questionsList').appendChild(p);
+    inp.value = '';
   }
 
-  // ── Init: load Old Testament on startup ──────────────────────
+  // ── Init ──────────────────────────────────────────────────────
   showBooks('old');
 </script>
 </body>
