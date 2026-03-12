@@ -1,5 +1,5 @@
 // Bible Summaries PWA — Service Worker
-const CACHE_NAME = 'bible-summaries-v3';
+const CACHE_NAME = 'bible-summaries-v4';
 
 const APP_SHELL = [
   './',
@@ -7,6 +7,8 @@ const APP_SHELL = [
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
+  './marked.min.js',
+  './version.json',
   './summaries/Genesis.md',
   './summaries/Exodus.md',
   './summaries/Leviticus.md',
@@ -18,7 +20,6 @@ const APP_SHELL = [
   './summaries/1Samuel.md',
   './summaries/2Samuel.md',
   './summaries/1Kings.md',
-  'https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js',
 ];
 
 // Install: cache app shell
@@ -29,7 +30,7 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// Activate: clear ALL old caches immediately
+// Activate: clear old caches
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -39,13 +40,19 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// Fetch: NETWORK-FIRST — always try to get fresh content,
-// fall back to cache only when offline
+// Fetch: network-first, fall back to cache
 self.addEventListener('fetch', event => {
+  // Always fetch version.json fresh so we detect updates
+  if (event.request.url.includes('version.json')) {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        // Cache a copy of every successful response
         if (response && response.status === 200) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
@@ -54,4 +61,9 @@ self.addEventListener('fetch', event => {
       })
       .catch(() => caches.match(event.request))
   );
+});
+
+// Listen for message from app to skip waiting
+self.addEventListener('message', event => {
+  if (event.data === 'skipWaiting') self.skipWaiting();
 });

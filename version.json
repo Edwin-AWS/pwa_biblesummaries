@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "books": [
+    "Genesis","Exodus","Leviticus","Numbers","Deuteronomy",
+    "Joshua","Judges","Ruth","1Samuel","2Samuel","1Kings"
+  ]
+}
