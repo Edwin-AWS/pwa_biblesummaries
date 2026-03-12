@@ -27,6 +27,8 @@
       --text-primary:#e0e0e0; --text-secondary:#b0b0b0;
       --border-color:#444; --verse-hover:#3a3a1a;
     }
+    .left.hidden{width:0;padding:0;overflow:hidden;}
+    .right.full{width:100%;}
     *{box-sizing:border-box;}
     body{margin:0;font-family:Arial,sans-serif;height:100vh;display:flex;flex-direction:column;background:var(--bg-primary);color:var(--text-primary);transition:background .3s,color .3s;}
 
@@ -179,6 +181,7 @@
         <option value="web">WEB</option>
       </select>
       <button class="nav-btn" onclick="toggleChapter()">📖 Show Chapter Text</button>
+<button class="nav-btn" id="focusBtn" onclick="toggleFocus()" style="background:#28a745;">🎯 Focus Mode</button>
     </div>
     <p id="summaryText" style="color:var(--text-secondary);font-style:italic;">
       Open the Menu → choose a book → select a chapter.
@@ -472,7 +475,34 @@
     left.classList.toggle('shrink', !open);
     if (!open && currentChapter) loadChapter();
   }
-
+// ── Focus mode: hide summary, scripture takes full width ──────
+  let focusMode = false;
+  function toggleFocus() {
+    const left  = document.getElementById('leftPanel');
+    const right = document.getElementById('rightPanel');
+    const btn   = document.getElementById('focusBtn');
+    focusMode = !focusMode;
+    if (focusMode) {
+      // Make sure chapter panel is open first
+      if (!right.classList.contains('open')) {
+        right.classList.add('open');
+        left.classList.add('shrink');
+        if (currentChapter) loadChapter();
+      }
+      left.classList.add('hidden');
+      right.classList.remove('open');
+      right.classList.add('full');
+      btn.textContent = '📖 Show Summary';
+      btn.style.background = '#dc3545';
+    } else {
+      left.classList.remove('hidden');
+      right.classList.remove('full');
+      right.classList.add('open');
+      left.classList.add('shrink');
+      btn.textContent = '🎯 Focus Mode';
+      btn.style.background = '#28a745';
+    }
+  }
   // ── Navigate prev/next ────────────────────────────────────────
   function navigateChapter(dir) {
     if (!currentBook) return;
