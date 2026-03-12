@@ -381,10 +381,13 @@
     }
   }
 
-  // ── Extract chapter from full MD ──────────────────────────────
-  function extractChapterHtml(fullMd, book, chNum) {
+function extractChapterHtml(fullMd, book, chNum) {
     const lines = fullMd.split('\n');
-    const re = new RegExp(`^##\\s+${escRe(book)}\\s+${chNum}(?:\\s|$|\\s*[—\\-])`, 'i');
+
+    // Match both "## Genesis 1 — Title" AND "## Chapter 1 — Title"
+    const re = new RegExp(
+      `^##\\s+(?:${escRe(book)}\\s+)?[Cc]hapter\\s+${chNum}(?:\\s|$|\\s*[—\\-])|^##\\s+${escRe(book)}\\s+${chNum}(?:\\s|$|\\s*[—\\-])`, 'i'
+    );
 
     // ── Find this chapter's start line ──────────────────────────
     let start = -1;
@@ -405,7 +408,7 @@
       chLines.push(lines[i]);
     }
 
-    // ── Always prepend Introduction block ───────────────────────
+    // ── Introduction block ───────────────────────────────────────
     const introLines = [];
     let inIntro = false;
     for (let i = 0; i < lines.length; i++) {
@@ -416,7 +419,7 @@
       }
     }
 
-    // ── Find Final Summary block if it exists ───────────────────
+    // ── Final Summary block ──────────────────────────────────────
     const finalLines = [];
     let inFinal = false;
     for (let i = 0; i < lines.length; i++) {
@@ -427,8 +430,8 @@
       }
     }
 
-    // ── Assemble: Intro + Chapter + Final Summary ────────────────
-    let parts = [];
+    // ── Assemble ─────────────────────────────────────────────────
+    const parts = [];
     if (introLines.length) parts.push(introLines.join('\n'));
     parts.push(chLines.join('\n'));
     if (finalLines.length) parts.push(finalLines.join('\n'));
