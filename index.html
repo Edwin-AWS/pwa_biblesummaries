@@ -385,9 +385,9 @@ function extractChapterHtml(fullMd, book, chNum) {
     const lines = fullMd.split('\n');
 
     // Match both "## Genesis 1 — Title" AND "## Chapter 1 — Title"
-    const re = new RegExp(
-      `^##\\s+(?:${escRe(book)}\\s+)?[Cc]hapter\\s+${chNum}(?:\\s|$|\\s*[—\\-])|^##\\s+${escRe(book)}\\s+${chNum}(?:\\s|$|\\s*[—\\-])`, 'i'
-    );
+   const re = new RegExp(
+  `^##\\s+${escRe(book)}\\s+${chNum}(?:\\s|$|\\s*[—\\-])`, 'i'
+);
 
     // ── Find this chapter's start line ──────────────────────────
     let start = -1;
