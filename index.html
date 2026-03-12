@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Study the Bible with summaries by Mateo the Preacher. Multiple versions, offline access.">
-  <meta name="theme-color" content="#007BFF">
+  <meta name="theme-color" content="#1c2b3a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -17,116 +17,274 @@
 
   <style>
     :root {
-      --bg-primary:#fff; --bg-secondary:#f4f4f4;
-      --text-primary:#000; --text-secondary:#333;
-      --border-color:#ccc; --verse-hover:#fffacd;
-      --accent:#007BFF; --accent-dark:#0056b3;
+      --bg-primary:#f8f6f1; --bg-secondary:#f0ede6;
+      --bg-scripture:#fff;
+      --text-primary:#1a1a1a; --text-secondary:#444;
+      --border-color:#ddd; --verse-hover:#fffacd;
+      --accent:#1c2b3a; --gold:#c9a84c;
+      --accent-light:#2a3f54;
     }
     body.dark-mode {
-      --bg-primary:#1a1a1a; --bg-secondary:#2a2a2a;
+      --bg-primary:#1a1a1a; --bg-secondary:#222;
+      --bg-scripture:#111;
       --text-primary:#e0e0e0; --text-secondary:#b0b0b0;
-      --border-color:#444; --verse-hover:#3a3a1a;
+      --border-color:#333; --verse-hover:#2a2a1a;
+      --accent:#0d1a26; --accent-light:#1c2b3a;
     }
-    .left.hidden{width:0;padding:0;overflow:hidden;}
-    .right.full{width:100%;}
-    *{box-sizing:border-box;}
-    body{margin:0;font-family:Arial,sans-serif;height:100vh;display:flex;flex-direction:column;background:var(--bg-primary);color:var(--text-primary);transition:background .3s,color .3s;}
+    *{box-sizing:border-box; margin:0; padding:0;}
+    body{font-family:'Lora',Georgia,serif;height:100vh;display:flex;flex-direction:column;background:var(--bg-primary);color:var(--text-primary);transition:background .3s,color .3s;overflow:hidden;}
 
-    /* Top bar */
-    .topbar{background:#333;color:#fff;padding:12px 20px;border-bottom:4px solid var(--accent);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px;}
-    .menu-btn{background:var(--accent);color:#fff;border:none;padding:10px 15px;cursor:pointer;border-radius:4px;font-size:14px;white-space:nowrap;}
-    .menu-btn:hover{background:var(--accent-dark);}
+    /* ── Top bar ──────────────────────────────────────────────── */
+    .topbar{
+      background:var(--accent);color:#fff;
+      padding:10px 16px;
+      border-bottom:3px solid var(--gold);
+      display:flex;align-items:center;
+      justify-content:space-between;
+      flex-shrink:0;gap:10px;
+    }
 
-    /* Dropdown */
+    /* Menu button */
+    .menu-btn{
+      background:var(--gold);color:var(--accent);
+      border:none;padding:8px 14px;
+      cursor:pointer;border-radius:6px;
+      font-size:13px;font-weight:bold;
+      white-space:nowrap;transition:opacity .2s;
+    }
+    .menu-btn:hover{opacity:.85;}
+
+    /* Chalkboard title */
+    .chalkboard{
+      flex:1;margin:0 10px;padding:8px 16px;
+      background:radial-gradient(circle at top left,#2a2a2a,#111);
+      border:1px solid #444;border-radius:8px;
+      text-align:center;
+      font-family:'Permanent Marker',cursive;color:#fff;
+    }
+    .chalkboard h1{font-size:clamp(10px,1.6vw,20px);font-weight:normal;margin-bottom:2px;}
+    .chalkboard p{font-size:clamp(8px,1vw,12px);font-style:italic;color:#ccc;}
+
+    /* View toggle */
+    .view-toggle{
+      display:flex;gap:4px;
+      background:#0d1a26;
+      border-radius:8px;padding:4px;
+      flex-shrink:0;
+    }
+    .view-toggle button{
+      background:transparent;color:#aaa;
+      border:none;padding:6px 12px;
+      border-radius:6px;cursor:pointer;
+      font-size:12px;font-weight:bold;
+      transition:all .2s;white-space:nowrap;
+    }
+    .view-toggle button.active{
+      background:var(--gold);color:var(--accent);
+    }
+
+    /* Dark mode + icon */
+    .topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+    .icon-btn{background:transparent;border:none;cursor:pointer;font-size:20px;padding:4px;}
+
+    /* ── Dropdown ─────────────────────────────────────────────── */
     .menu-wrapper{position:relative;}
-    .dropdown{display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;color:#000;border:1px solid #ccc;min-width:240px;max-height:430px;overflow-y:auto;z-index:9999;border-radius:4px;box-shadow:0 4px 12px rgba(0,0,0,.2);}
+    .dropdown{
+      display:none;position:absolute;
+      top:calc(100% + 6px);left:0;
+      background:#fff;color:#000;
+      border:1px solid #ccc;
+      min-width:250px;max-height:450px;
+      overflow-y:auto;z-index:9999;
+      border-radius:8px;
+      box-shadow:0 8px 24px rgba(0,0,0,.2);
+    }
     .dropdown.open{display:block;}
-    body.dark-mode .dropdown{background:#2a2a2a;color:#e0e0e0;border-color:#555;}
-    .dropdown-search{padding:10px;border-bottom:1px solid #ccc;}
-    .dropdown-search input{width:100%;padding:7px 10px;border:1px solid #ccc;border-radius:4px;font-size:13px;}
+    body.dark-mode .dropdown{background:#1e1e1e;color:#e0e0e0;border-color:#444;}
 
-    /* Testament tabs */
-    .testament-tabs{display:flex;list-style:none;margin:0;padding:0;border-bottom:1px solid #ccc;}
-    .testament-tabs li{flex:1;padding:10px;text-align:center;cursor:pointer;font-weight:bold;font-size:13px;background:#f4f4f4;transition:background .2s;}
+    .dropdown-search{padding:10px;border-bottom:1px solid #eee;}
+    .dropdown-search input{
+      width:100%;padding:8px 12px;
+      border:1px solid #ddd;border-radius:6px;
+      font-size:13px;font-family:Arial,sans-serif;
+    }
+    body.dark-mode .dropdown-search input{background:#2a2a2a;color:#e0e0e0;border-color:#444;}
+
+    .testament-tabs{display:flex;list-style:none;border-bottom:1px solid #eee;}
+    .testament-tabs li{
+      flex:1;padding:10px;text-align:center;
+      cursor:pointer;font-weight:bold;font-size:13px;
+      font-family:Arial,sans-serif;
+      background:#f4f4f4;transition:background .2s;
+    }
     .testament-tabs li:hover{background:#e0e0e0;}
-    .testament-tabs li.active{background:var(--accent);color:#fff;}
-    body.dark-mode .testament-tabs li{background:#333;}
-    body.dark-mode .testament-tabs li.active{background:var(--accent);color:#fff;}
+    .testament-tabs li.active{background:var(--gold);color:#fff;}
+    body.dark-mode .testament-tabs li{background:#2a2a2a;}
+    body.dark-mode .testament-tabs li.active{background:var(--gold);color:#1c2b3a;}
 
-    /* Book list */
     #booksList{padding:4px 0;}
-    #booksList ul{list-style:none;margin:0;padding:0;}
-    #booksList > ul > li{padding:8px 14px;cursor:pointer;font-size:14px;transition:background .15s;}
-    #booksList > ul > li:hover{background:#e8e8e8;}
-    #booksList > ul > li.active-book{font-weight:bold;color:var(--accent);}
-    body.dark-mode #booksList > ul > li:hover{background:#3a3a3a;}
+    #booksList ul{list-style:none;}
+    #booksList > ul > li{
+      padding:9px 16px;cursor:pointer;
+      font-size:14px;font-family:Arial,sans-serif;
+      transition:background .15s;
+    }
+    #booksList > ul > li:hover{background:#f0ede6;}
+    #booksList > ul > li.active-book{font-weight:bold;color:var(--gold);}
+    body.dark-mode #booksList > ul > li:hover{background:#2a2a2a;}
 
-    /* Chapter sub-list */
-    .chapter-list{list-style:none;margin:0;padding:0 0 4px;background:#f9f9f9;border-top:1px solid #eee;}
-    body.dark-mode .chapter-list{background:#222;border-color:#444;}
-    .chapter-list li{padding:6px 14px 6px 28px;cursor:pointer;font-size:13px;color:#555;transition:background .15s;}
-    .chapter-list li:hover{background:#e0e0e0;color:#000;}
-    .chapter-list li.selected{background:#28a745;color:#fff;font-weight:bold;}
-    body.dark-mode .chapter-list li{color:#aaa;}
-    body.dark-mode .chapter-list li:hover{background:#3a3a3a;color:#fff;}
+    .chapter-list{list-style:none;background:#faf8f4;border-top:1px solid #eee;}
+    body.dark-mode .chapter-list{background:#161616;border-color:#333;}
+    .chapter-list li{
+      padding:7px 16px 7px 32px;
+      cursor:pointer;font-size:13px;
+      font-family:Arial,sans-serif;color:#666;
+      transition:background .15s;
+    }
+    .chapter-list li:hover{background:#e8e4dc;color:#000;}
+    .chapter-list li.selected{background:var(--gold);color:#fff;font-weight:bold;}
+    body.dark-mode .chapter-list li{color:#888;}
+    body.dark-mode .chapter-list li:hover{background:#2a2a2a;color:#fff;}
 
-    /* Chalkboard */
-    .chalkboard{flex:1;margin:0 12px;padding:12px 20px;background:radial-gradient(circle at top left,#2a2a2a,#111);border:2px solid #444;border-radius:8px;text-align:center;font-family:'Permanent Marker',cursive;color:#fff;box-shadow:inset 0 0 40px rgba(255,255,255,.05);}
-    .chalkboard h1{font-size:clamp(11px,1.7vw,22px);font-weight:normal;margin:0 0 5px;}
-    .chalkboard p{font-size:clamp(9px,1.1vw,13px);margin:0;font-style:italic;}
-
-    /* Icon */
-    .icon{width:50px;height:65px;background:var(--accent);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
-
-    /* Layout */
+    /* ── Content area ─────────────────────────────────────────── */
     .content{flex:1;display:flex;overflow:hidden;min-height:0;}
-    .left{width:100%;padding:20px;background:var(--bg-secondary);transition:width .4s;overflow-y:auto;}
-    .left.shrink{width:50%;}
-    .right{width:0;padding:0;background:var(--bg-primary);transition:width .4s;overflow-y:auto;border-left:1px solid var(--border-color);}
-    .right.open{width:50%;padding:20px;}
 
-    /* Controls */
-    .controls{margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-    select{padding:8px 10px;border:1px solid var(--border-color);border-radius:4px;background:var(--bg-primary);color:var(--text-primary);font-size:14px;}
+    /* Summary panel */
+    .left{
+      width:100%;padding:24px 28px;
+      background:var(--bg-primary);
+      overflow-y:auto;
+      transition:width .4s cubic-bezier(.4,0,.2,1),
+                 padding .4s, opacity .3s;
+    }
+    .left.split{width:50%;border-right:1px solid var(--border-color);}
+    .left.hidden{width:0;padding:0;overflow:hidden;opacity:0;}
+
+    /* Scripture panel */
+    .right{
+      width:0;padding:0;
+      background:var(--bg-scripture);
+      overflow-y:auto;opacity:0;
+      transition:width .4s cubic-bezier(.4,0,.2,1),
+                 padding .4s, opacity .3s;
+    }
+    .right.split{width:50%;padding:24px 28px;opacity:1;}
+    .right.full{width:100%;padding:24px 28px;opacity:1;}
+
+    /* ── Controls row ─────────────────────────────────────────── */
+    .controls{
+      margin-bottom:18px;
+      display:flex;align-items:center;
+      gap:10px;flex-wrap:wrap;
+    }
+    .controls label{font-size:13px;color:var(--text-secondary);font-family:Arial,sans-serif;}
+    select{
+      padding:7px 10px;
+      border:1px solid var(--border-color);
+      border-radius:6px;
+      background:var(--bg-scripture);
+      color:var(--text-primary);
+      font-size:13px;font-family:Arial,sans-serif;
+    }
 
     /* Nav buttons */
-    .nav-buttons{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
-    .nav-btn{background:var(--accent);color:#fff;border:none;padding:9px 18px;cursor:pointer;border-radius:4px;font-size:14px;transition:background .2s;}
-    .nav-btn:hover{background:var(--accent-dark);}
+    .nav-buttons{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+    .nav-btn{
+      background:var(--accent);color:#fff;
+      border:none;padding:8px 16px;
+      cursor:pointer;border-radius:6px;
+      font-size:13px;font-family:Arial,sans-serif;
+      transition:background .2s;
+    }
+    .nav-btn:hover{background:var(--accent-light);}
     .nav-btn:disabled{background:#ccc;cursor:not-allowed;}
 
-    /* Verses */
-    .chapter-content{margin-top:10px;}
-    .verse{padding:9px 9px 9px 50px;margin:3px 0;border-left:3px solid transparent;position:relative;cursor:pointer;transition:background .15s,border-color .15s;line-height:1.85;font-size:15px;color:var(--text-secondary);font-family:'Lora',Georgia,serif;}
-    .verse:hover{background:var(--verse-hover);border-left-color:var(--accent);}
-    .verse-number{position:absolute;left:10px;top:10px;font-weight:bold;color:var(--accent);font-size:.85em;min-width:30px;}
-
-    /* Summary markdown */
-    #summaryContent{margin-top:10px;line-height:1.7;}
-    #summaryContent h1{font-family:Georgia,serif;font-size:1.5rem;color:var(--accent);margin:0 0 8px;}
-    #summaryContent h2{font-family:Georgia,serif;font-size:1.25rem;color:var(--text-primary);border-bottom:2px solid var(--accent);padding-bottom:5px;margin:4px 0 6px;}
-    #summaryContent h3{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin:18px 0 6px;}
-    #summaryContent p{line-height:1.85;margin:6px 0 12px;color:var(--text-secondary);font-size:15px;font-family:'Lora',Georgia,serif;}
+    /* ── Summary content ──────────────────────────────────────── */
+    #summaryContent{margin-top:8px;line-height:1.8;}
+    #summaryContent h1{font-size:1.5rem;color:var(--gold);margin-bottom:10px;}
+    #summaryContent h2{
+      font-size:1.2rem;color:var(--text-primary);
+      border-bottom:2px solid var(--gold);
+      padding-bottom:5px;margin:6px 0 8px;
+    }
+    #summaryContent h3{
+      font-size:.68rem;text-transform:uppercase;
+      letter-spacing:.1em;color:var(--gold);
+      margin:20px 0 6px;font-family:Arial,sans-serif;
+    }
+    #summaryContent p{line-height:1.85;margin:6px 0 12px;color:var(--text-secondary);font-size:15px;}
     #summaryContent strong{color:var(--text-primary);}
-    #summaryContent em{font-style:italic;}
-    #summaryContent blockquote{border-left:3px solid var(--accent);background:#f0f8ff;margin:12px 0;padding:10px 16px;border-radius:0 6px 6px 0;font-style:italic;color:var(--text-secondary);font-family:'Lora',Georgia,serif;}
-    body.dark-mode #summaryContent blockquote{background:#1a2a3a;}
-    #summaryContent blockquote.prayer-block{border-left-color:#2563eb;background:#e8f0ff;}
-    body.dark-mode #summaryContent blockquote.prayer-block{background:#1a2038;}
-    #summaryContent hr{border:none;border-top:1px solid var(--border-color);margin:20px 0;}
-    #summaryContent ul{margin:4px 0 12px 22px;color:var(--text-secondary);}
-    #summaryContent li{margin-bottom:6px;line-height:1.85;font-size:15px;font-family:'Lora',Georgia,serif;}
+    #summaryContent blockquote{
+      border-left:3px solid var(--gold);
+      background:#fdf8ee;margin:14px 0;
+      padding:12px 18px;border-radius:0 6px 6px 0;
+      font-style:italic;color:var(--text-secondary);
+    }
+    body.dark-mode #summaryContent blockquote{background:#1a1a0a;}
+    #summaryContent blockquote.prayer-block{border-left-color:#2563eb;background:#eef3ff;}
+    body.dark-mode #summaryContent blockquote.prayer-block{background:#0d1428;}
+    #summaryContent hr{border:none;border-top:1px solid var(--border-color);margin:22px 0;}
+    #summaryContent ul{margin:4px 0 14px 22px;color:var(--text-secondary);}
+    #summaryContent li{margin-bottom:7px;line-height:1.85;font-size:15px;}
 
-    /* Comments/Questions */
-    .section{margin-top:28px;padding-top:14px;border-top:2px solid var(--border-color);}
-    .section h3{margin-bottom:10px;}
-    .section textarea{width:100%;height:60px;margin-bottom:8px;padding:8px;border:1px solid var(--border-color);border-radius:4px;background:var(--bg-primary);color:var(--text-primary);resize:vertical;}
-    .section button{background:var(--accent);color:#fff;border:none;padding:7px 14px;cursor:pointer;border-radius:4px;}
+    /* ── Verses ───────────────────────────────────────────────── */
+    .chapter-content{margin-top:8px;}
+    .verse{
+      padding:9px 9px 9px 48px;margin:3px 0;
+      border-left:3px solid transparent;
+      position:relative;cursor:pointer;
+      transition:background .15s,border-color .15s;
+      line-height:1.85;font-size:15px;
+      color:var(--text-secondary);
+    }
+    .verse:hover{background:var(--verse-hover);border-left-color:var(--gold);}
+    .verse-number{
+      position:absolute;left:10px;top:10px;
+      font-weight:bold;color:var(--gold);
+      font-size:.82em;min-width:28px;
+      font-family:Arial,sans-serif;
+    }
+
+    /* ── Section headings ─────────────────────────────────────── */
+    .panel-heading{
+      font-size:1.15rem;font-weight:bold;
+      color:var(--text-primary);
+      border-bottom:2px solid var(--gold);
+      padding-bottom:6px;margin-bottom:16px;
+    }
+
+    /* ── Comments/Questions ───────────────────────────────────── */
+    .section{margin-top:30px;padding-top:16px;border-top:1px solid var(--border-color);}
+    .section h3{margin-bottom:10px;font-size:15px;font-family:Arial,sans-serif;}
+    .section textarea{
+      width:100%;height:60px;margin-bottom:8px;
+      padding:8px;border:1px solid var(--border-color);
+      border-radius:6px;background:var(--bg-scripture);
+      color:var(--text-primary);resize:vertical;
+      font-family:'Lora',Georgia,serif;font-size:14px;
+    }
+    .section button{
+      background:var(--gold);color:var(--accent);
+      border:none;padding:7px 14px;
+      cursor:pointer;border-radius:6px;
+      font-weight:bold;font-family:Arial,sans-serif;
+    }
     .list{margin-top:10px;}
-    .list p{background:var(--bg-secondary);padding:7px 10px;border-radius:4px;margin-bottom:5px;}
+    .list p{
+      background:var(--bg-secondary);
+      padding:8px 12px;border-radius:6px;
+      margin-bottom:6px;font-size:14px;
+    }
 
-    /* Offline */
-    .offline-indicator{position:fixed;bottom:20px;right:20px;background:#ff9800;color:#fff;padding:10px 18px;border-radius:4px;display:none;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+    /* ── Offline ──────────────────────────────────────────────── */
+    .offline-indicator{
+      position:fixed;bottom:20px;right:20px;
+      background:#ff9800;color:#fff;
+      padding:10px 18px;border-radius:6px;
+      display:none;z-index:9999;
+      box-shadow:0 2px 8px rgba(0,0,0,.3);
+      font-family:Arial,sans-serif;font-size:13px;
+    }
     .offline-indicator.show{display:block;}
 
     /* Overlay */
@@ -148,7 +306,7 @@
       </div>
       <ul class="testament-tabs">
         <li id="tabOld" class="active" onclick="showBooks('old')">Old Testament</li>
-        <li id="tabNew"               onclick="showBooks('new')">New Testament</li>
+        <li id="tabNew" onclick="showBooks('new')">New Testament</li>
       </ul>
       <div id="booksList"></div>
     </div>
@@ -159,31 +317,38 @@
     <p>"Study to shew thyself approved unto God…" — 2 Timothy 2:15</p>
   </div>
 
-  <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
-    <button class="menu-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
-    <div class="icon">📖</div>
+  <!-- 3-way view toggle -->
+  <div class="view-toggle">
+    <button id="btnSummary"   onclick="setView('summary')"   class="active">📝 Summary</button>
+    <button id="btnSplit"     onclick="setView('split')">⚡ Split</button>
+    <button id="btnScripture" onclick="setView('scripture')">📖 Scripture</button>
+  </div>
+
+  <div class="topbar-right">
+    <button class="icon-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
+    <div style="width:44px;height:58px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:24px;">📖</div>
   </div>
 </div>
 
 <!-- Main content -->
 <div class="content">
+
+  <!-- Left: Summary -->
   <div class="left" id="leftPanel">
-    <h2>Scripture Summary</h2>
+    <div class="panel-heading">Scripture Summary</div>
     <div class="nav-buttons">
       <button class="nav-btn" id="prevBtn" onclick="navigateChapter(-1)" disabled>← Previous</button>
       <button class="nav-btn" id="nextBtn" onclick="navigateChapter(1)"  disabled>Next →</button>
     </div>
     <div class="controls">
-      <label style="font-size:13px;color:var(--text-secondary)">Version:</label>
+      <label>Version:</label>
       <select id="versionSelect" onchange="onVersionChange()">
         <option value="asv">ASV</option>
         <option value="kjv" selected>KJV</option>
         <option value="web">WEB</option>
       </select>
-      <button class="nav-btn" onclick="toggleChapter()">📖 Show Chapter Text</button>
-<button class="nav-btn" id="focusBtn" onclick="toggleFocus()" style="background:#28a745;">🎯 Focus Mode</button>
     </div>
-    <p id="summaryText" style="color:var(--text-secondary);font-style:italic;">
+    <p id="summaryText" style="color:var(--text-secondary);font-style:italic;font-size:15px;">
       Open the Menu → choose a book → select a chapter.
     </p>
     <div id="summaryContent" style="display:none;"></div>
@@ -195,8 +360,9 @@
     </div>
   </div>
 
+  <!-- Right: Scripture -->
   <div class="right" id="rightPanel">
-    <h2 id="chapterHeading">Chapter Text</h2>
+    <div class="panel-heading" id="chapterHeading">Chapter Text</div>
     <div class="nav-buttons">
       <button class="nav-btn" onclick="navigateChapter(-1)">← Previous</button>
       <button class="nav-btn" onclick="navigateChapter(1)">Next →</button>
@@ -226,7 +392,7 @@
     });
   }
 
-  // ── Offline indicator ─────────────────────────────────────────
+  // ── Offline ───────────────────────────────────────────────────
   const offlineEl = document.getElementById('offlineIndicator');
   window.addEventListener('online',  () => offlineEl.classList.remove('show'));
   window.addEventListener('offline', () => offlineEl.classList.add('show'));
@@ -234,6 +400,7 @@
 
   // ── State ─────────────────────────────────────────────────────
   let currentBook = '', currentChapterNum = 0, currentChapter = '', currentTestament = 'old';
+  let currentView = 'summary'; // 'summary' | 'split' | 'scripture'
 
   // ── Bible structure ───────────────────────────────────────────
   const bibleStructure = {
@@ -258,7 +425,6 @@
   };
   const singleChapterBooks = {"Obadiah":21,"Philemon":25,"2 John":13,"3 John":14,"Jude":25};
 
-  // ── Books with summaries ──────────────────────────────────────
   const booksWithSummaries = {
     "Genesis":"Genesis","Exodus":"Exodus","Leviticus":"Leviticus",
     "Numbers":"Numbers","Deuteronomy":"Deuteronomy","Joshua":"Joshua",
@@ -270,6 +436,35 @@
   marked.setOptions({breaks:true, gfm:true});
   const esc   = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+
+  // ── View toggle ───────────────────────────────────────────────
+  function setView(view) {
+    currentView = view;
+    const left  = document.getElementById('leftPanel');
+    const right = document.getElementById('rightPanel');
+
+    // Reset classes
+    left.className  = 'left';
+    right.className = 'right';
+
+    if (view === 'summary') {
+      // Summary full width, scripture hidden
+    } else if (view === 'split') {
+      left.classList.add('split');
+      right.classList.add('split');
+      if (currentChapter) loadChapter();
+    } else if (view === 'scripture') {
+      left.classList.add('hidden');
+      right.classList.add('full');
+      if (currentChapter) loadChapter();
+    }
+
+    // Update button states
+    ['summary','split','scripture'].forEach(v => {
+      document.getElementById('btn' + v.charAt(0).toUpperCase() + v.slice(1))
+        .classList.toggle('active', v === view);
+    });
+  }
 
   // ── Menu ──────────────────────────────────────────────────────
   function toggleMenu() {
@@ -292,9 +487,8 @@
     document.getElementById('tabNew').classList.toggle('active', testament==='new');
     document.querySelectorAll('.chapter-list').forEach(el => el.remove());
 
-    const books = Object.keys(bibleStructure[testament]);
     const ul = document.createElement('ul');
-    books.forEach(book => {
+    Object.keys(bibleStructure[testament]).forEach(book => {
       const li = document.createElement('li');
       li.textContent = book;
       li.dataset.book = book;
@@ -318,10 +512,10 @@
     bookLi.classList.add('active-book');
 
     const count = bibleStructure[testament][book];
-    const ul = document.createElement('ul');
+    const ul    = document.createElement('ul');
     ul.className = 'chapter-list';
     for (let i = 1; i <= count; i++) {
-      const li = document.createElement('li');
+      const li    = document.createElement('li');
       li.textContent = `Chapter ${i}`;
       if (book === currentBook && i === currentChapterNum) li.classList.add('selected');
       const chNum = i;
@@ -346,7 +540,7 @@
     document.getElementById('nextBtn').disabled = chNum >= maxCh;
     closeMenu();
     loadSummary(book, chNum);
-    if (document.getElementById('rightPanel').classList.contains('open')) loadChapter();
+    if (currentView === 'split' || currentView === 'scripture') loadChapter();
   }
 
   // ── Summary loader ────────────────────────────────────────────
@@ -364,7 +558,7 @@
     try {
       if (!summaryCache[mdKey]) {
         const url = `${S3_BASE_URL}/summaries/${mdKey}.md`;
-        const r = await fetch(url);
+        const r   = await fetch(url);
         if (!r.ok) throw new Error(`HTTP ${r.status} — ${url}`);
         summaryCache[mdKey] = await r.text();
       }
@@ -382,12 +576,11 @@
     }
   }
 
-  // ── Extract chapter from full MD ──────────────────────────────
+  // ── Extract chapter from MD ───────────────────────────────────
   function extractChapterHtml(fullMd, book, chNum) {
     const lines = fullMd.split('\n');
-    const re = new RegExp(`^##\\s+${escRe(book)}\\s+${chNum}(?:\\s|$|\\s*[—\\-])`, 'i');
+    const re    = new RegExp(`^##\\s+${escRe(book)}\\s+${chNum}(?:\\s|$|\\s*[—\\-])`, 'i');
 
-    // Find chapter start
     let start = -1;
     for (let i = 0; i < lines.length; i++) {
       if (re.test(lines[i])) { start = i; break; }
@@ -398,14 +591,13 @@
       </p>`;
     }
 
-    // Extract chapter lines
     const chLines = [lines[start]];
     for (let i = start + 1; i < lines.length; i++) {
       if (/^##\s/.test(lines[i]) && !/^###/.test(lines[i])) break;
       chLines.push(lines[i]);
     }
 
-    // Introduction block
+    // Introduction (chapter 1 only)
     const introLines = [];
     let inIntro = false;
     for (let i = 0; i < lines.length; i++) {
@@ -416,7 +608,7 @@
       }
     }
 
-    // Final Summary block
+    // Final Summary
     const finalLines = [];
     let inFinal = false;
     for (let i = 0; i < lines.length; i++) {
@@ -427,7 +619,6 @@
       }
     }
 
-    // Assemble: Intro (chapter 1 only) + Chapter + Final Summary
     const parts = [];
     if (chNum === 1 && introLines.length) parts.push(introLines.join('\n'));
     parts.push(chLines.join('\n'));
@@ -441,68 +632,36 @@
     if (!currentBook) return;
     const content = document.getElementById('chapterContent');
     const version = document.getElementById('versionSelect').value;
-    document.getElementById('chapterHeading').textContent = `${currentChapter} (${version.toUpperCase()})`;
+    document.getElementById('chapterHeading').textContent =
+      `${currentChapter} (${version.toUpperCase()})`;
     content.innerHTML = '<p style="color:#888;font-style:italic">Fetching verses…</p>';
     try {
-      let url = singleChapterBooks[currentBook]
+      const url = singleChapterBooks[currentBook]
         ? `https://bible-api.com/${encodeURIComponent(currentBook)}%201:1-${singleChapterBooks[currentBook]}?translation=${version}`
         : `https://bible-api.com/${encodeURIComponent(currentChapter)}?translation=${version}`;
-      const r = await fetch(url);
+      const r    = await fetch(url);
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const data = await r.json();
       if (data.verses && data.verses.length) {
         content.innerHTML = data.verses.map(v =>
-          `<div class="verse"><span class="verse-number">${v.verse}</span><span class="verse-text">${v.text}</span></div>`
+          `<div class="verse">
+            <span class="verse-number">${v.verse}</span>
+            <span class="verse-text">${v.text}</span>
+          </div>`
         ).join('');
       } else {
         content.innerText = `No verses found for ${currentChapter} in ${version.toUpperCase()}.`;
       }
     } catch(err) {
-      content.innerHTML=`<p style="color:red"><strong>Could not load ${esc(currentChapter)}</strong><br><small>${esc(err.message)}</small></p>`;
+      content.innerHTML = `<p style="color:red"><strong>Could not load ${esc(currentChapter)}</strong><br>
+        <small>${esc(err.message)}</small></p>`;
     }
   }
 
   function onVersionChange() {
-    if (document.getElementById('rightPanel').classList.contains('open') && currentChapter) loadChapter();
+    if ((currentView === 'split' || currentView === 'scripture') && currentChapter) loadChapter();
   }
 
-  // ── Toggle chapter panel ──────────────────────────────────────
-  function toggleChapter() {
-    const left  = document.getElementById('leftPanel');
-    const right = document.getElementById('rightPanel');
-    const open  = right.classList.contains('open');
-    right.classList.toggle('open', !open);
-    left.classList.toggle('shrink', !open);
-    if (!open && currentChapter) loadChapter();
-  }
-// ── Focus mode: hide summary, scripture takes full width ──────
-  let focusMode = false;
-  function toggleFocus() {
-    const left  = document.getElementById('leftPanel');
-    const right = document.getElementById('rightPanel');
-    const btn   = document.getElementById('focusBtn');
-    focusMode = !focusMode;
-    if (focusMode) {
-      // Make sure chapter panel is open first
-      if (!right.classList.contains('open')) {
-        right.classList.add('open');
-        left.classList.add('shrink');
-        if (currentChapter) loadChapter();
-      }
-      left.classList.add('hidden');
-      right.classList.remove('open');
-      right.classList.add('full');
-      btn.textContent = '📖 Show Summary';
-      btn.style.background = '#dc3545';
-    } else {
-      left.classList.remove('hidden');
-      right.classList.remove('full');
-      right.classList.add('open');
-      left.classList.add('shrink');
-      btn.textContent = '🎯 Focus Mode';
-      btn.style.background = '#28a745';
-    }
-  }
   // ── Navigate prev/next ────────────────────────────────────────
   function navigateChapter(dir) {
     if (!currentBook) return;
