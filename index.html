@@ -34,13 +34,31 @@
     *{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'Lora',Georgia,serif;height:100vh;display:flex;flex-direction:column;background:var(--bg-primary);color:var(--text-primary);transition:background .3s,color .3s;overflow:hidden;}
 
-    .topbar{background:var(--accent);color:#fff;padding:10px 16px;border-bottom:3px solid var(--gold);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:10px;}
+    /* ── Two-row topbar ───────────────────────────────────────── */
+    .topbar{background:var(--accent);color:#fff;border-bottom:3px solid var(--gold);flex-shrink:0;}
+
+    /* Row 1: chalkboard title */
+    .topbar-title{padding:8px 14px;}
+    .chalkboard{
+      width:100%;padding:8px 16px;
+      background:radial-gradient(circle at top left,#2a2a2a,#111);
+      border:1px solid #444;border-radius:8px;
+      text-align:center;
+      font-family:'Permanent Marker',cursive;color:#fff;
+      display:flex;align-items:center;justify-content:center;gap:10px;
+    }
+    .chalkboard-icon{font-size:22px;flex-shrink:0;}
+    .chalkboard h1{font-size:clamp(11px,1.8vw,22px);font-weight:normal;margin-bottom:2px;}
+    .chalkboard p{font-size:clamp(8px,1vw,12px);font-style:italic;color:#ccc;}
+
+    /* Row 2: buttons */
+    .topbar-btns{
+      padding:8px 14px;
+      display:flex;align-items:center;
+      justify-content:space-between;gap:8px;
+    }
     .menu-btn{background:var(--gold);color:var(--accent);border:none;padding:8px 14px;cursor:pointer;border-radius:6px;font-size:13px;font-weight:bold;white-space:nowrap;transition:opacity .2s;}
     .menu-btn:hover{opacity:.85;}
-
-    .chalkboard{flex:1;margin:0 10px;padding:8px 16px;background:radial-gradient(circle at top left,#2a2a2a,#111);border:1px solid #444;border-radius:8px;text-align:center;font-family:'Permanent Marker',cursive;color:#fff;}
-    .chalkboard h1{font-size:clamp(10px,1.6vw,20px);font-weight:normal;margin-bottom:2px;}
-    .chalkboard p{font-size:clamp(8px,1vw,12px);font-style:italic;color:#ccc;}
 
     .view-toggle{display:flex;gap:4px;background:#0d1a26;border-radius:8px;padding:4px;flex-shrink:0;}
     .view-toggle button{background:transparent;color:#aaa;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:bold;transition:all .2s;white-space:nowrap;}
@@ -49,6 +67,15 @@
     .topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
     .icon-btn{background:transparent;border:none;cursor:pointer;font-size:20px;padding:4px;}
 
+    /* Verse of the day button */
+    .votd-btn{
+      background:transparent;border:none;cursor:pointer;
+      font-size:22px;padding:4px;
+      transition:transform .2s;
+    }
+    .votd-btn:hover{transform:scale(1.15);}
+
+    /* ── Dropdown ─────────────────────────────────────────────── */
     .menu-wrapper{position:relative;}
     .dropdown{display:none;position:absolute;top:calc(100% + 6px);left:0;background:#fff;color:#000;border:1px solid #ccc;min-width:250px;max-height:450px;overflow-y:auto;z-index:9999;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.2);}
     .dropdown.open{display:block;}
@@ -79,6 +106,7 @@
     body.dark-mode .chapter-list li{color:#888;}
     body.dark-mode .chapter-list li:hover{background:#2a2a2a;color:#fff;}
 
+    /* ── Content ──────────────────────────────────────────────── */
     .content{flex:1;display:flex;overflow:hidden;min-height:0;}
     .left{width:100%;padding:24px 28px;background:var(--bg-primary);overflow-y:auto;transition:width .4s cubic-bezier(.4,0,.2,1),padding .4s,opacity .3s;}
     .left.split{width:50%;border-right:1px solid var(--border-color);}
@@ -124,53 +152,120 @@
     .list{margin-top:10px;}
     .list p{background:var(--bg-secondary);padding:8px 12px;border-radius:6px;margin-bottom:6px;font-size:14px;}
 
+    /* ── Offline indicator ────────────────────────────────────── */
     .offline-indicator{position:fixed;bottom:20px;right:20px;background:#ff9800;color:#fff;padding:10px 18px;border-radius:6px;display:none;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,.3);font-family:Arial,sans-serif;font-size:13px;}
     .offline-indicator.show{display:block;}
 
+    /* ── Update toast ─────────────────────────────────────────── */
     .update-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1c2b3a;color:#fff;padding:12px 20px;border-radius:8px;display:none;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.3);font-family:Arial,sans-serif;font-size:13px;align-items:center;gap:12px;border:1px solid var(--gold);}
     .update-toast.show{display:flex;}
     .update-toast button{background:var(--gold);color:#1c2b3a;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-weight:bold;font-size:12px;}
 
+    /* ── Verse of the Day modal ───────────────────────────────── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000;display:none;align-items:center;justify-content:center;}
+    .modal-overlay.show{display:flex;}
+    .modal{
+      background:var(--bg-primary);border-radius:12px;
+      padding:32px 28px;max-width:420px;width:90%;
+      box-shadow:0 12px 40px rgba(0,0,0,.3);
+      text-align:center;font-family:'Lora',Georgia,serif;
+      border-top:4px solid var(--gold);
+      position:relative;
+    }
+    .modal-close{
+      position:absolute;top:12px;right:14px;
+      background:transparent;border:none;
+      font-size:20px;cursor:pointer;
+      color:var(--text-secondary);line-height:1;
+    }
+    .modal-close:hover{color:var(--text-primary);}
+    .votd-label{
+      font-size:11px;text-transform:uppercase;
+      letter-spacing:.12em;color:var(--gold);
+      font-family:Arial,sans-serif;margin-bottom:14px;
+    }
+    .votd-text{
+      font-size:1.1rem;line-height:1.85;
+      color:var(--text-primary);
+      font-style:italic;margin-bottom:16px;
+    }
+    .votd-ref{
+      font-size:13px;font-weight:bold;
+      color:var(--gold);font-family:Arial,sans-serif;
+      margin-bottom:20px;
+    }
+    .votd-prayer{
+      font-size:13px;line-height:1.7;
+      color:var(--text-secondary);
+      border-top:1px solid var(--border-color);
+      padding-top:14px;font-style:italic;
+    }
+    .modal-btn{
+      background:var(--gold);color:var(--accent);
+      border:none;padding:10px 28px;
+      border-radius:8px;cursor:pointer;
+      font-size:13px;font-weight:bold;
+      margin-top:16px;font-family:Arial,sans-serif;
+      transition:opacity .2s;
+    }
+    .modal-btn:hover{opacity:.85;}
+
     #menuOverlay{display:none;position:fixed;inset:0;z-index:9998;}
     #menuOverlay.active{display:block;}
+
+    /* ── Mobile: view toggle labels shorten ──────────────────── */
+    @media(max-width:600px){
+      .view-toggle button{padding:5px 8px;font-size:11px;}
+      .btn-label{display:none;}
+    }
   </style>
 </head>
 <body>
 
 <div id="menuOverlay" onclick="closeMenu()"></div>
 
+<!-- Top bar: two rows -->
 <div class="topbar">
-  <div class="menu-wrapper">
-    <button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
-    <div class="dropdown" id="dropdownMenu">
-      <div class="dropdown-search">
-        <input type="text" id="searchInput" placeholder="Search books…" autocomplete="off">
+  <!-- Row 1: Chalkboard title + icon -->
+  <div class="topbar-title">
+    <div class="chalkboard">
+      <span class="chalkboard-icon">📖</span>
+      <div>
+        <h1>BIBLE SUMMARIES BY MATEO THE PREACHER</h1>
+        <p>"Study to shew thyself approved unto God…" — 2 Timothy 2:15</p>
       </div>
-      <ul class="testament-tabs">
-        <li id="tabOld" class="active" onclick="showBooks('old')">Old Testament</li>
-        <li id="tabNew" onclick="showBooks('new')">New Testament</li>
-      </ul>
-      <div id="booksList"></div>
     </div>
   </div>
+  <!-- Row 2: Buttons -->
+  <div class="topbar-btns">
+    <div class="menu-wrapper">
+      <button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
+      <div class="dropdown" id="dropdownMenu">
+        <div class="dropdown-search">
+          <input type="text" id="searchInput" placeholder="Search books…" autocomplete="off">
+        </div>
+        <ul class="testament-tabs">
+          <li id="tabOld" class="active" onclick="showBooks('old')">Old Testament</li>
+          <li id="tabNew" onclick="showBooks('new')">New Testament</li>
+        </ul>
+        <div id="booksList"></div>
+      </div>
+    </div>
 
-  <div class="chalkboard">
-    <h1>BIBLE SUMMARIES BY MATEO THE PREACHER</h1>
-    <p>"Study to shew thyself approved unto God…" — 2 Timothy 2:15</p>
-  </div>
+    <div class="view-toggle">
+      <button id="btnSummary"   onclick="setView('summary')"   class="active">📝 <span class="btn-label">Summary</span></button>
+      <button id="btnSplit"     onclick="setView('split')">⚡ <span class="btn-label">Split</span></button>
+      <button id="btnScripture" onclick="setView('scripture')">📖 <span class="btn-label">Scripture</span></button>
+    </div>
 
-  <div class="view-toggle">
-    <button id="btnSummary"   onclick="setView('summary')"   class="active">📝 Summary</button>
-    <button id="btnSplit"     onclick="setView('split')">⚡ Split</button>
-    <button id="btnScripture" onclick="setView('scripture')">📖 Scripture</button>
-  </div>
-
-  <div class="topbar-right">
-    <button class="icon-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
-    <div style="width:44px;height:58px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:24px;">📖</div>
+    <div class="topbar-right">
+      <button class="votd-btn" onclick="showVerseOfDay()" title="Verse of the Day">✨</button>
+      <button class="icon-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
+    </div>
   </div>
 </div>
 
+<!-- Main content -->
 <div class="content">
   <div class="left" id="leftPanel">
     <div class="panel-heading">Scripture Summary</div>
@@ -216,15 +311,30 @@
 
 <div class="offline-indicator" id="offlineIndicator">📡 You're offline — cached content only</div>
 
+<!-- Update toast -->
 <div class="update-toast" id="updateToast">
   <span id="updateMsg">🔄 Update available!</span>
   <button onclick="applyUpdate()">Update Now</button>
   <button onclick="dismissUpdate()" style="background:transparent;color:#ccc;font-size:12px;">Later</button>
 </div>
 
+<!-- Verse of the Day modal -->
+<div class="modal-overlay" id="votdModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeVotd()">✕</button>
+    <div class="votd-label">✨ Verse of the Day</div>
+    <div class="votd-text" id="votdText">Loading…</div>
+    <div class="votd-ref"  id="votdRef"></div>
+    <div class="votd-prayer" id="votdPrayer"></div>
+    <button class="modal-btn" onclick="closeVotd()">🙏 Amen</button>
+  </div>
+</div>
+
 <script>
+  // ── Config ────────────────────────────────────────────────────
   const S3_BASE_URL = "https://edwin-aws.github.io/files";
 
+  // ── Service Worker ────────────────────────────────────────────
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./service-worker.js')
@@ -233,40 +343,71 @@
     });
   }
 
+  // ── Offline ───────────────────────────────────────────────────
   const offlineEl = document.getElementById('offlineIndicator');
   window.addEventListener('online',  () => offlineEl.classList.remove('show'));
   window.addEventListener('offline', () => offlineEl.classList.add('show'));
   if (!navigator.onLine) offlineEl.classList.add('show');
 
-  // ── Bible JSON cache (loaded once per version) ────────────────
+  // ── Bible JSON cache ──────────────────────────────────────────
   const bibleCache = {};
-
   async function loadBibleVersion(version) {
     if (bibleCache[version]) return bibleCache[version];
     const r = await fetch(`./bible/${version}.json`);
     if (!r.ok) throw new Error(`Could not load ${version}.json`);
     const raw = await r.json();
-    // Parse into { "Book:Chapter": [{verse, text}, ...] }
     const parsed = {};
     for (const item of raw) {
       if (!item.r) continue;
       const parts = item.r.split(':');
-      // format: version:Book:Chapter:Verse
       if (parts.length < 4) continue;
       const verseNum = parseInt(parts[3]);
-      if (verseNum === 0) continue; // skip chapter headings
+      if (verseNum === 0) continue;
       const book    = parts[1];
       const chapter = parts[2];
       const key     = `${book}:${chapter}`;
       if (!parsed[key]) parsed[key] = [];
-      parsed[key].push({
-        verse: verseNum,
-        text:  item.t.replace(/\*p/g, '').trim()
-      });
+      parsed[key].push({ verse: verseNum, text: item.t.replace(/\*p/g,'').trim() });
     }
     bibleCache[version] = parsed;
     return parsed;
   }
+
+  // ── Verse of the Day ──────────────────────────────────────────
+  const VOTD_VERSES = [
+    { ref:"John 3:16",       text:"For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.",          prayer:"Lord, thank You for Your incredible love. Help us to truly grasp the depth of Your sacrifice. Amen." },
+    { ref:"Psalm 23:1",      text:"The LORD is my shepherd; I shall not want.",                                                                                                             prayer:"Father, remind us today that You are our provider and guide. We trust in Your care. Amen." },
+    { ref:"Proverbs 3:5-6",  text:"Trust in the LORD with all thine heart; and lean not unto thine own understanding. In all thy ways acknowledge him, and he shall direct thy paths.",     prayer:"Lord, help us to surrender our plans to You and trust Your perfect direction. Amen." },
+    { ref:"Isaiah 40:31",    text:"But they that wait upon the LORD shall renew their strength; they shall mount up with wings as eagles; they shall run, and not be weary.",               prayer:"Father, renew our strength today. May we soar above our circumstances by Your power. Amen." },
+    { ref:"Philippians 4:13",text:"I can do all things through Christ which strengtheneth me.",                                                                                             prayer:"Lord, remind us that our ability comes from You. May we face today's challenges in Your strength. Amen." },
+    { ref:"Romans 8:28",     text:"And we know that all things work together for good to them that love God, to them who are the called according to his purpose.",                         prayer:"Father, help us to trust Your plan even when we cannot see it. All things are in Your hands. Amen." },
+    { ref:"Joshua 1:9",      text:"Have not I commanded thee? Be strong and of a good courage; be not afraid, neither be thou dismayed: for the LORD thy God is with thee whithersoever thou goest.", prayer:"Lord, fill us with courage today. Remind us that You are always with us. Amen." },
+    { ref:"Matthew 6:33",    text:"But seek ye first the kingdom of God, and his righteousness; and all these things shall be added unto you.",                                             prayer:"Father, help us to put You first in everything we do today. Amen." },
+    { ref:"Psalm 119:105",   text:"Thy word is a lamp unto my feet, and a light unto my path.",                                                                                            prayer:"Lord, let Your Word guide every step we take. May we never stray from Your light. Amen." },
+    { ref:"2 Timothy 1:7",   text:"For God hath not given us the spirit of fear; but of power, and of love, and of a sound mind.",                                                         prayer:"Father, cast out all fear and fill us with Your power, love and clarity today. Amen." },
+    { ref:"Jeremiah 29:11",  text:"For I know the thoughts that I think toward you, saith the LORD, thoughts of peace, and not of evil, to give you an expected end.",                     prayer:"Lord, thank You that Your plans for us are good. Help us to trust Your future for our lives. Amen." },
+    { ref:"Psalm 46:1",      text:"God is our refuge and strength, a very present help in trouble.",                                                                                       prayer:"Father, be our refuge today. In every trouble, remind us You are near. Amen." },
+    { ref:"Lamentations 3:22-23", text:"It is of the LORD's mercies that we are not consumed, because his compassions fail not. They are new every morning: great is thy faithfulness.",   prayer:"Lord, thank You for Your mercies that are new each morning. Great is Your faithfulness. Amen." },
+    { ref:"Hebrews 11:1",    text:"Now faith is the substance of things hoped for, the evidence of things not seen.",                                                                       prayer:"Father, strengthen our faith today. Help us to trust what we cannot yet see. Amen." },
+    { ref:"Ephesians 2:8-9", text:"For by grace are ye saved through faith; and that not of yourselves: it is the gift of God: Not of works, lest any man should boast.",                 prayer:"Lord, thank You for the free gift of salvation. May we never take Your grace for granted. Amen." },
+  ];
+
+  function showVerseOfDay() {
+    // Pick a verse based on the day of the year so it changes daily
+    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+    const v = VOTD_VERSES[dayOfYear % VOTD_VERSES.length];
+    document.getElementById('votdText').textContent   = `"${v.text}"`;
+    document.getElementById('votdRef').textContent    = `— ${v.ref}`;
+    document.getElementById('votdPrayer').innerHTML   = `🙏 <em>${v.prayer}</em>`;
+    document.getElementById('votdModal').classList.add('show');
+  }
+  function closeVotd() {
+    document.getElementById('votdModal').classList.remove('show');
+  }
+  // Close modal on overlay click
+  document.getElementById('votdModal').addEventListener('click', function(e) {
+    if (e.target === this) closeVotd();
+  });
 
   // ── Auto-update checker ───────────────────────────────────────
   const STORED_VERSION_KEY = 'app-version';
@@ -278,7 +419,6 @@
       const data = await r.json();
       const stored      = localStorage.getItem(STORED_VERSION_KEY);
       const storedBooks = JSON.parse(localStorage.getItem('app-books') || '[]');
-
       if (stored && stored !== data.version) {
         const newBooks = data.books.filter(b => !storedBooks.includes(b));
         await cacheNewSummaries(data.books);
@@ -286,7 +426,6 @@
       }
       localStorage.setItem(STORED_VERSION_KEY, data.version);
       localStorage.setItem('app-books', JSON.stringify(data.books));
-
       data.books.forEach(key => {
         const display = key
           .replace('1Samuel','1 Samuel').replace('2Samuel','2 Samuel')
@@ -299,9 +438,7 @@
           .replace('1John','1 John').replace('2John','2 John').replace('3John','3 John');
         booksWithSummaries[display] = key;
       });
-    } catch(e) {
-      console.log('Version check skipped (offline?):', e.message);
-    }
+    } catch(e) { console.log('Version check skipped:', e.message); }
   }
 
   async function cacheNewSummaries(books) {
@@ -312,7 +449,7 @@
         const r   = await fetch(url);
         if (r.ok) await cache.put(url, r);
       }
-    } catch(e) { /* offline */ }
+    } catch(e) {}
   }
 
   function showUpdateToast(newBooks) {
@@ -331,7 +468,6 @@
     }
     toast.classList.add('show');
   }
-
   function applyUpdate() {
     document.getElementById('updateToast').classList.remove('show');
     Object.keys(summaryCache).forEach(k => delete summaryCache[k]);
@@ -346,6 +482,7 @@
   let currentBook = '', currentChapterNum = 0, currentChapter = '', currentTestament = 'old';
   let currentView = 'summary';
 
+  // ── Bible structure ───────────────────────────────────────────
   const bibleStructure = {
     old:{
       "Genesis":50,"Exodus":40,"Leviticus":27,"Numbers":36,"Deuteronomy":34,
@@ -387,12 +524,10 @@
     left.className  = 'left';
     right.className = 'right';
     if (view === 'split') {
-      left.classList.add('split');
-      right.classList.add('split');
+      left.classList.add('split'); right.classList.add('split');
       if (currentChapter) loadChapter();
     } else if (view === 'scripture') {
-      left.classList.add('hidden');
-      right.classList.add('full');
+      left.classList.add('hidden'); right.classList.add('full');
       if (currentChapter) loadChapter();
     }
     ['summary','split','scripture'].forEach(v => {
@@ -401,6 +536,7 @@
     });
   }
 
+  // ── Menu ──────────────────────────────────────────────────────
   function toggleMenu() {
     const menu    = document.getElementById('dropdownMenu');
     const overlay = document.getElementById('menuOverlay');
@@ -414,6 +550,7 @@
   }
   function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 
+  // ── Books ─────────────────────────────────────────────────────
   function showBooks(testament) {
     currentTestament = testament;
     document.getElementById('tabOld').classList.toggle('active', testament==='old');
@@ -470,6 +607,7 @@
     if (currentView === 'split' || currentView === 'scripture') loadChapter();
   }
 
+  // ── Summary ───────────────────────────────────────────────────
   async function loadSummary(book, chNum) {
     const msgEl  = document.getElementById('summaryText');
     const contEl = document.getElementById('summaryContent');
@@ -508,19 +646,15 @@
     for (let i = 0; i < lines.length; i++) {
       if (re.test(lines[i])) { start = i; break; }
     }
-    if (start === -1) {
-      return `<p style="color:#888;font-style:italic">
-        The summary for ${esc(book)} ${chNum} hasn't been written yet. Check back soon!
-      </p>`;
-    }
+    if (start === -1) return `<p style="color:#888;font-style:italic">The summary for ${esc(book)} ${chNum} hasn't been written yet. Check back soon!</p>`;
     const chLines = [lines[start]];
-    for (let i = start + 1; i < lines.length; i++) {
+    for (let i = start+1; i < lines.length; i++) {
       if (/^##\s/.test(lines[i]) && !/^###/.test(lines[i])) break;
       chLines.push(lines[i]);
     }
     const introLines = []; let inIntro = false;
     for (let i = 0; i < lines.length; i++) {
-      if (/^## Introduction/i.test(lines[i])) { inIntro = true; }
+      if (/^## Introduction/i.test(lines[i])) inIntro = true;
       if (inIntro) {
         if (/^## /i.test(lines[i]) && !/^## Introduction/i.test(lines[i])) break;
         introLines.push(lines[i]);
@@ -528,7 +662,7 @@
     }
     const finalLines = []; let inFinal = false;
     for (let i = 0; i < lines.length; i++) {
-      if (/^## Final Summary/i.test(lines[i])) { inFinal = true; }
+      if (/^## Final Summary/i.test(lines[i])) inFinal = true;
       if (inFinal) {
         if (/^## /i.test(lines[i]) && !/^## Final Summary/i.test(lines[i])) break;
         finalLines.push(lines[i]);
@@ -549,12 +683,9 @@
     document.getElementById('chapterHeading').textContent = `${currentChapter} (${version.toUpperCase()})`;
     content.innerHTML = '<p style="color:#888;font-style:italic">Loading…</p>';
     try {
-      const bible  = await loadBibleVersion(version);
-      // Book name in JSON uses no spaces e.g. "1Samuel", "Song of Solomon"
-      // Try direct match first, then strip spaces
-      const bookKey = currentBook.replace(/ /g, '');
-      const chapKey = `${bookKey}:${currentChapterNum}`;
-      const verses  = bible[chapKey] || bible[`${currentBook}:${currentChapterNum}`];
+      const bible   = await loadBibleVersion(version);
+      const bookKey = currentBook.replace(/ /g,'');
+      const verses  = bible[`${bookKey}:${currentChapterNum}`] || bible[`${currentBook}:${currentChapterNum}`];
       if (verses && verses.length) {
         content.innerHTML = verses.map(v =>
           `<div class="verse"><span class="verse-number">${v.verse}</span><span class="verse-text">${esc(v.text)}</span></div>`
@@ -568,17 +699,17 @@
   }
 
   function onVersionChange() {
-    if ((currentView === 'split' || currentView === 'scripture') && currentChapter) loadChapter();
+    if ((currentView==='split'||currentView==='scripture') && currentChapter) loadChapter();
   }
 
   function navigateChapter(dir) {
     if (!currentBook) return;
     const maxCh = bibleStructure[currentTestament][currentBook];
     const next  = currentChapterNum + dir;
-    if (next < 1 || next > maxCh) return;
+    if (next<1||next>maxCh) return;
     const chList = document.querySelector('.chapter-list');
     if (chList) {
-      const t = chList.querySelectorAll('li')[next - 1];
+      const t = chList.querySelectorAll('li')[next-1];
       if (t) { t.click(); return; }
     }
     selectChapter(currentBook, next);
@@ -608,6 +739,7 @@
     inp.value = '';
   }
 
+  // ── Init ──────────────────────────────────────────────────────
   showBooks('old');
   window.addEventListener('load', () => setTimeout(checkForUpdates, 2000));
 </script>
