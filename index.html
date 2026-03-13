@@ -218,6 +218,39 @@
       .view-toggle button{padding:5px 8px;font-size:11px;}
       .btn-label{display:none;}
     }
+
+    /* ── Install tutorial modal ───────────────────────────────── */
+    .install-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:10001;display:none;align-items:center;justify-content:center;padding:16px;}
+    .install-overlay.show{display:flex;}
+    .install-modal{background:#1c2b3a;border-radius:16px;max-width:480px;width:100%;overflow:hidden;border:1px solid #c9a84c;animation:modalSlideUp .4s cubic-bezier(.4,0,.2,1);}
+    @keyframes modalSlideUp{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
+    .install-header{background:radial-gradient(circle at top left,#2a3f54,#1c2b3a);padding:24px 24px 16px;text-align:center;border-bottom:1px solid rgba(201,168,76,.3);}
+    .install-header .big-icon{font-size:44px;margin-bottom:10px;display:block;}
+    .install-header h2{font-family:'Permanent Marker',cursive;color:#c9a84c;font-size:1.3rem;font-weight:normal;margin-bottom:6px;}
+    .install-header p{color:#aaa;font-size:13px;font-family:Arial,sans-serif;line-height:1.5;}
+    .platform-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.1);}
+    .platform-tab{flex:1;padding:12px;text-align:center;cursor:pointer;font-size:13px;font-weight:bold;font-family:Arial,sans-serif;color:#888;transition:all .2s;border:none;background:transparent;}
+    .platform-tab.active{color:#c9a84c;border-bottom:2px solid #c9a84c;}
+    .platform-tab:hover{color:#fff;}
+    .install-steps{padding:20px 24px;}
+    .install-step{display:flex;gap:14px;align-items:flex-start;margin-bottom:20px;animation:stepFadeIn .3s ease both;}
+    @keyframes stepFadeIn{from{opacity:0;transform:translateX(-10px);}to{opacity:1;transform:translateX(0);}}
+    .install-step:nth-child(1){animation-delay:.05s;}
+    .install-step:nth-child(2){animation-delay:.12s;}
+    .install-step:nth-child(3){animation-delay:.19s;}
+    .install-step:nth-child(4){animation-delay:.26s;}
+    .step-num{width:32px;height:32px;border-radius:50%;background:#c9a84c;color:#1c2b3a;font-weight:bold;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:Arial,sans-serif;}
+    .step-content{flex:1;}
+    .step-content strong{display:block;color:#fff;font-size:14px;margin-bottom:4px;font-family:Arial,sans-serif;}
+    .step-content span{color:#aaa;font-size:13px;font-family:Arial,sans-serif;line-height:1.5;}
+    .step-icon{display:inline-block;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);border-radius:6px;padding:3px 8px;font-size:12px;color:#c9a84c;font-family:Arial,sans-serif;margin-top:6px;}
+    .offline-note{margin:0 24px 20px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);border-radius:8px;padding:12px 14px;font-size:12px;color:#c9a84c;font-family:Arial,sans-serif;line-height:1.6;}
+    .offline-note strong{display:block;margin-bottom:3px;font-size:13px;}
+    .install-footer{padding:16px 24px 20px;display:flex;gap:10px;border-top:1px solid rgba(255,255,255,.08);}
+    .install-cta{flex:1;background:#c9a84c;color:#1c2b3a;border:none;padding:12px;border-radius:8px;font-weight:bold;font-size:14px;cursor:pointer;font-family:Arial,sans-serif;transition:opacity .2s;}
+    .install-cta:hover{opacity:.85;}
+    .install-skip{background:transparent;border:1px solid rgba(255,255,255,.2);color:#888;padding:12px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-family:Arial,sans-serif;transition:all .2s;white-space:nowrap;}
+    .install-skip:hover{color:#fff;border-color:rgba(255,255,255,.4);}
   </style>
 </head>
 <body>
@@ -740,8 +773,99 @@
   }
 
   // ── Init ──────────────────────────────────────────────────────
+
+  // ── Install tutorial modal ────────────────────────────────────
+  const INSTALL_STEPS = {
+    android: [
+      { num:1, title:"Open in Chrome",       desc:"Make sure you're viewing this page in Chrome on your Android device.", icon:"Chrome browser" },
+      { num:2, title:"Tap the Menu",         desc:"Tap the three dots ⋮ in the top-right corner of Chrome.", icon:"⋮  Menu" },
+      { num:3, title:"Add to Home Screen",   desc:'Scroll down and tap "Add to Home screen" or "Install app".', icon:"⊕ Add to Home screen" },
+      { num:4, title:"Confirm Install",      desc:'Tap "Add" or "Install" in the popup. The app icon will appear on your home screen!', icon:"✓ Install" },
+    ],
+    ios: [
+      { num:1, title:"Open in Safari",       desc:"Make sure you're viewing this page in Safari on your iPhone or iPad.", icon:"Safari browser" },
+      { num:2, title:"Tap the Share button", desc:"Tap the Share icon (□↑) at the bottom of Safari.", icon:"□↑ Share" },
+      { num:3, title:"Add to Home Screen",   desc:'Scroll through the options and tap "Add to Home Screen".', icon:"⊕ Add to Home Screen" },
+      { num:4, title:"Tap Add",              desc:'Tap "Add" in the top-right corner. The Bible app icon will appear on your home screen!', icon:"✓ Add" },
+    ]
+  };
+
+  let currentPlatform = 'android';
+
+  function renderInstallSteps(platform) {
+    const steps = INSTALL_STEPS[platform];
+    document.getElementById('installSteps').innerHTML = steps.map(s => `
+      <div class="install-step">
+        <div class="step-num">${s.num}</div>
+        <div class="step-content">
+          <strong>${s.title}</strong>
+          <span>${s.desc}</span><br>
+          <span class="step-icon">${s.icon}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function switchPlatform(platform) {
+    currentPlatform = platform;
+    document.getElementById('tabAndroid').classList.toggle('active', platform==='android');
+    document.getElementById('tabIos').classList.toggle('active', platform==='ios');
+    renderInstallSteps(platform);
+  }
+
+  function checkInstallModal() {
+    if (localStorage.getItem('install-shown')) return;
+    if (window.matchMedia('(display-mode: standalone)').matches) return;
+    const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    currentPlatform = isIos ? 'ios' : 'android';
+    setTimeout(() => {
+      switchPlatform(currentPlatform);
+      document.getElementById('installModal').classList.add('show');
+    }, 4000);
+  }
+
+  function closeInstallModal() {
+    document.getElementById('installModal').classList.remove('show');
+    localStorage.setItem('install-shown', 'true');
+  }
+  function dismissInstallModal() {
+    document.getElementById('installModal').classList.remove('show');
+  }
+
+  document.getElementById('installModal').addEventListener('click', function(e) {
+    if (e.target === this) closeInstallModal();
+  });
+
   showBooks('old');
-  window.addEventListener('load', () => setTimeout(checkForUpdates, 2000));
+  window.addEventListener('load', () => {
+    setTimeout(checkForUpdates, 2000);
+    checkInstallModal();
+  });
 </script>
+
+<!-- Install tutorial modal -->
+<div class="install-overlay" id="installModal">
+  <div class="install-modal">
+    <div class="install-header">
+      <span class="big-icon">📖</span>
+      <h2>Install for Offline Reading</h2>
+      <p>Add this app to your home screen for instant access<br>and full offline Bible reading — no internet needed!</p>
+    </div>
+    <div class="platform-tabs">
+      <button class="platform-tab active" id="tabAndroid" onclick="switchPlatform('android')">🤖 Android</button>
+      <button class="platform-tab"        id="tabIos"     onclick="switchPlatform('ios')">🍎 iPhone</button>
+    </div>
+    <div class="install-steps" id="installSteps"></div>
+    <div class="offline-note">
+      <strong>✅ What works offline after installing:</strong>
+      All Bible summaries by Mateo · Full Bible text (KJV, ASV, WEB) · Dark mode · Navigation
+    </div>
+    <div class="install-footer">
+      <button class="install-cta" onclick="closeInstallModal()">Got it — let's go! 🙏</button>
+      <button class="install-skip" onclick="dismissInstallModal()">Maybe later</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
