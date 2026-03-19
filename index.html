@@ -984,7 +984,7 @@
     applyAnnotationToEl(el, vkey);
     // Long-press
     el.addEventListener('mousedown',  () => startPress(el, vkey));
-    el.addEventListener('touchstart', (e) => { e.preventDefault(); startPress(el, vkey); }, {passive:false});
+    el.addEventListener('touchstart', (e) => { startPress(el, vkey, e); }, {passive:true});
     el.addEventListener('mouseup',    cancelPress);
     el.addEventListener('touchend',   cancelPress);
     el.addEventListener('mouseleave', cancelPress);
@@ -1085,21 +1085,31 @@
 
       // Long press — works on both touch and mouse
       el.addEventListener('mousedown',  () => startPress(el, vkey));
-      el.addEventListener('touchstart', (e) => { e.preventDefault(); startPress(el, vkey); }, {passive:false});
+      el.addEventListener('touchstart', (e) => { startPress(el, vkey, e); }, {passive:true});
       el.addEventListener('mouseup',    cancelPress);
       el.addEventListener('touchend',   cancelPress);
       el.addEventListener('mouseleave', cancelPress);
     });
   }
 
-  function startPress(el, vkey) {
+  let pressStartY = 0;
+
+  function startPress(el, vkey, e) {
     cancelPress();
+    pressStartY = e ? (e.touches ? e.touches[0].clientY : e.clientY) : 0;
     pressTimer = setTimeout(() => {
       activeVerseEl  = el;
       activeVerseKey = vkey;
       showPopup(el, vkey);
     }, 500);
   }
+
+  // Cancel if user scrolls more than 10px
+  document.addEventListener('touchmove', (e) => {
+    if (!pressTimer) return;
+    const y = e.touches[0].clientY;
+    if (Math.abs(y - pressStartY) > 10) cancelPress();
+  }, {passive:true});
   function cancelPress() {
     if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
   }
