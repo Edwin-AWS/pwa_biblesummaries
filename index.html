@@ -213,10 +213,10 @@
     #menuOverlay{display:none;position:fixed;inset:0;z-index:9998;}
     #menuOverlay.active{display:block;}
 
-    /* ── Mobile: view toggle labels shorten ──────────────────── */
+    /* ── Mobile: shrink toggle but keep labels visible ───────── */
     @media(max-width:600px){
-      .view-toggle button{padding:5px 8px;font-size:11px;}
-      .btn-label{display:none;}
+      .view-toggle button{padding:5px 7px;font-size:10px;}
+      .menu-btn{padding:7px 10px;font-size:12px;}
     }
 
     /* ── Install tutorial modal ───────────────────────────────── */
@@ -394,13 +394,16 @@
       if (!item.r) continue;
       const parts = item.r.split(':');
       if (parts.length < 4) continue;
-      const verseNum = parseInt(parts[3]);
+      // Last segment = verse, second-to-last = chapter, middle = book (may have spaces)
+      const verseNum = parseInt(parts[parts.length - 1]);
       if (verseNum === 0) continue;
-      const book    = parts[1];
-      const chapter = parts[2];
+      const chapter = parts[parts.length - 2];
+      const book    = parts.slice(1, parts.length - 2).join(' ');
       const key     = `${book}:${chapter}`;
       if (!parsed[key]) parsed[key] = [];
-      parsed[key].push({ verse: verseNum, text: item.t.replace(/\*p/g,'').trim() });
+      // Strip all USFM markers: *p *r *q *q2 *b *m *pi *li etc.
+      const cleaned = item.t.replace(/\*[a-z][a-z0-9]*/g, ' ').replace(/\s+/g, ' ').trim();
+      parsed[key].push({ verse: verseNum, text: cleaned });
     }
     bibleCache[version] = parsed;
     return parsed;
@@ -717,8 +720,10 @@
     content.innerHTML = '<p style="color:#888;font-style:italic">Loading…</p>';
     try {
       const bible   = await loadBibleVersion(version);
-      const bookKey = currentBook.replace(/ /g,'');
-      const verses  = bible[`${bookKey}:${currentChapterNum}`] || bible[`${currentBook}:${currentChapterNum}`];
+      // Book names in parsed JSON now keep spaces (e.g. "Song of Solomon")
+      // Try with spaces first, then without as fallback
+      const verses  = bible[`${currentBook}:${currentChapterNum}`]
+                   || bible[`${currentBook.replace(/ /g,'')}:${currentChapterNum}`];
       if (verses && verses.length) {
         content.innerHTML = verses.map(v =>
           `<div class="verse"><span class="verse-number">${v.verse}</span><span class="verse-text">${esc(v.text)}</span></div>`
@@ -832,8 +837,11 @@
     document.getElementById('installModal').classList.remove('show');
   }
 
-  document.getElementById('installModal').addEventListener('click', function(e) {
-    if (e.target === this) closeInstallModal();
+  window.addEventListener('load', function() {
+    const im = document.getElementById('installModal');
+    if (im) im.addEventListener('click', function(e) {
+      if (e.target === this) closeInstallModal();
+    });
   });
 
   showBooks('old');
