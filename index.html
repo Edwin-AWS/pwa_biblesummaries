@@ -720,10 +720,10 @@
     content.innerHTML = '<p style="color:#888;font-style:italic">Loading…</p>';
     try {
       const bible   = await loadBibleVersion(version);
-      // Book names in parsed JSON now keep spaces (e.g. "Song of Solomon")
-      // Try with spaces first, then without as fallback
-      const verses  = bible[`${currentBook}:${currentChapterNum}`]
-                   || bible[`${currentBook.replace(/ /g,'')}:${currentChapterNum}`];
+      // Book names in parsed JSON keep spaces but "Psalms" is stored as "Psalm"
+      const jsonBook = currentBook === 'Psalms' ? 'Psalm' : currentBook;
+      const verses  = bible[`${jsonBook}:${currentChapterNum}`]
+                   || bible[`${jsonBook.replace(/ /g,'')}:${currentChapterNum}`];
       if (verses && verses.length) {
         content.innerHTML = verses.map(v =>
           `<div class="verse"><span class="verse-number">${v.verse}</span><span class="verse-text">${esc(v.text)}</span></div>`
