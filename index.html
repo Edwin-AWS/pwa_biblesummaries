@@ -92,6 +92,23 @@
     body.dark-mode .testament-tabs li.active{background:var(--gold);color:#1c2b3a;}
 
     #booksList{padding:4px 0;}
+    .menu-footer{border-top:1px solid #eee;padding:8px 0;}
+    body.dark-mode .menu-footer{border-color:#333;}
+    .menu-footer-btn{
+      display:flex;align-items:center;gap:10px;
+      width:100%;padding:11px 16px;
+      background:transparent;border:none;
+      cursor:pointer;font-size:14px;
+      font-family:Arial,sans-serif;
+      color:var(--text-primary,#1a1a1a);
+      text-align:left;transition:background .15s;
+    }
+    .menu-footer-btn:hover{background:#f0ede6;}
+    body.dark-mode .menu-footer-btn{color:#e0e0e0;}
+    body.dark-mode .menu-footer-btn:hover{background:#2a2a2a;}
+    .menu-footer-btn .mfb-icon{font-size:16px;width:20px;text-align:center;}
+    .menu-footer-btn .mfb-label{font-weight:600;}
+    .menu-footer-btn .mfb-sub{font-size:11px;color:#888;margin-left:auto;}
     #booksList ul{list-style:none;}
     #booksList > ul > li{padding:9px 16px;cursor:pointer;font-size:14px;font-family:Arial,sans-serif;transition:background .15s;}
     #booksList > ul > li:hover{background:#f0ede6;}
@@ -511,6 +528,23 @@
           <li id="tabNew" onclick="showBooks('new')">New Testament</li>
         </ul>
         <div id="booksList"></div>
+        <div class="menu-footer">
+          <button class="menu-footer-btn" onclick="closeMenu();openDrawer('bookmarks')">
+            <span class="mfb-icon">🔖</span>
+            <span class="mfb-label">Bookmarks</span>
+            <span class="mfb-sub" id="bmCount"></span>
+          </button>
+          <button class="menu-footer-btn" onclick="closeMenu();openDrawer('notes')">
+            <span class="mfb-icon">📝</span>
+            <span class="mfb-label">My Notes</span>
+            <span class="mfb-sub" id="noteCount"></span>
+          </button>
+          <button class="menu-footer-btn" onclick="closeMenu();openDrawer('highlights')">
+            <span class="mfb-icon">🟡</span>
+            <span class="mfb-label">Highlights</span>
+            <span class="mfb-sub" id="hlCount"></span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -522,7 +556,6 @@
 
     <div class="topbar-right">
       <button class="votd-btn" onclick="showVerseOfDay()" title="Verse of the Day">✨</button>
-      <button class="votd-btn" onclick="openDrawer()" title="Bookmarks &amp; Notes">🔖</button>
       <button class="icon-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
     </div>
   </div>
@@ -809,6 +842,7 @@
     const opening = !menu.classList.contains('open');
     menu.classList.toggle('open', opening);
     overlay.classList.toggle('active', opening);
+    if (opening) updateMenuCounts();
   }
   function closeMenu() {
     document.getElementById('dropdownMenu').classList.remove('open');
@@ -942,6 +976,21 @@
   }
 
   // ── Bible text from local JSON ────────────────────────────────
+  function buildVerseEl(v, book, chNum) {
+    const el = document.createElement('div');
+    el.className = 'verse';
+    el.innerHTML = `<span class="verse-number">${v.verse}</span><span class="verse-text">${esc(v.text)}</span><span class="bookmark-star">🔖</span><span class="note-dot"></span>`;
+    const vkey = verseKey(book, chNum, v.verse);
+    applyAnnotationToEl(el, vkey);
+    // Long-press
+    el.addEventListener('mousedown',  () => startPress(el, vkey));
+    el.addEventListener('touchstart', (e) => { e.preventDefault(); startPress(el, vkey); }, {passive:false});
+    el.addEventListener('mouseup',    cancelPress);
+    el.addEventListener('touchend',   cancelPress);
+    el.addEventListener('mouseleave', cancelPress);
+    return el;
+  }
+
   async function loadChapter() {
     if (!currentBook) return;
     const content = document.getElementById('chapterContent');
@@ -1164,10 +1213,26 @@
   // ── Drawer ────────────────────────────────────────────────────
   let currentDrawerTab = 'bookmarks';
 
-  function openDrawer() {
+  function updateMenuCounts() {
+    const data = getAnnotations();
+    const keys = Object.keys(data);
+    const bm = keys.filter(k => data[k].bookmark).length;
+    const nt = keys.filter(k => data[k].note).length;
+    const hl = keys.filter(k => data[k].highlight).length;
+    const bmEl = document.getElementById('bmCount');
+    const ntEl = document.getElementById('noteCount');
+    const hlEl = document.getElementById('hlCount');
+    if (bmEl) bmEl.textContent = bm ? `${bm}` : '';
+    if (ntEl) ntEl.textContent = nt ? `${nt}` : '';
+    if (hlEl) hlEl.textContent = hl ? `${hl}` : '';
+  }
+
+  function openDrawer(tab) {
+    if (tab) switchDrawerTab(tab);
     document.getElementById('drawer').classList.add('open');
     document.getElementById('drawerOverlay').style.display = 'block';
     renderDrawer();
+    updateMenuCounts();
   }
   function closeDrawer() {
     document.getElementById('drawer').classList.remove('open');
