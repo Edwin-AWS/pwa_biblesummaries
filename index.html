@@ -416,7 +416,69 @@
       border-top:1px solid var(--border-color);
     }
     .search-more:hover{background:#f0ede6;}
+
+    /* ── Comments & Questions ────────────────────────────────── */
+    .cq-section{margin-top:24px;padding-top:16px;border-top:1px solid var(--border-color);}
+    .cq-tabs{display:flex;border-bottom:1px solid var(--border-color);margin-bottom:12px;}
+    .cq-tab{flex:1;padding:8px;text-align:center;font-size:12px;font-weight:700;font-family:Arial,sans-serif;border:none;background:transparent;cursor:pointer;color:var(--text-secondary);border-bottom:2px solid transparent;transition:all .2s;}
+    .cq-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+
+    /* Identity setup */
+    .identity-setup{background:var(--bg-secondary);border-radius:8px;padding:14px;margin-bottom:12px;text-align:center;}
+    .identity-setup p{font-size:12px;color:var(--text-secondary);margin-bottom:10px;font-family:Arial,sans-serif;}
+    .identity-setup strong{display:block;font-size:14px;color:var(--text-primary);margin-bottom:6px;}
+    .id-row{display:flex;gap:6px;margin-bottom:8px;}
+    .id-input{flex:1;padding:7px 10px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:Arial,sans-serif;background:var(--bg-scripture);color:var(--text-primary);}
+    .id-input.pin{width:80px;flex:none;}
+    .id-btn{background:var(--gold);color:#1c2b3a;border:none;padding:8px 16px;border-radius:6px;font-weight:700;font-size:13px;cursor:pointer;width:100%;font-family:Arial,sans-serif;}
+
+    /* Post input */
+    .cq-input-wrap{margin-bottom:14px;}
+    .cq-who{font-size:11px;color:var(--text-secondary);font-family:Arial,sans-serif;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;}
+    .cq-who a{color:var(--gold);cursor:pointer;font-size:11px;text-decoration:none;}
+    .cq-textarea{width:100%;padding:8px 10px;border:1px solid var(--border-color);border-radius:6px;background:var(--bg-scripture);color:var(--text-primary);font-family:'Lora',Georgia,serif;font-size:13px;resize:vertical;min-height:58px;margin-bottom:6px;}
+    .cq-post-btn{background:var(--gold);color:#1c2b3a;border:none;padding:8px 18px;border-radius:6px;font-weight:700;font-size:13px;cursor:pointer;font-family:Arial,sans-serif;transition:opacity .2s;}
+    .cq-post-btn:hover{opacity:.85;}
+    .cq-post-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+    /* Thread */
+    .cq-thread{display:flex;flex-direction:column;gap:10px;}
+    .cq-item{background:var(--bg-secondary);border-radius:8px;padding:10px 12px;border-left:3px solid var(--border-color);position:relative;}
+    .cq-item.question{border-left-color:var(--gold);}
+    .cq-item.answered{border-left-color:#2e7d32;}
+    .cq-item-header{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+    .cq-avatar{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--gold);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:Arial,sans-serif;}
+    .cq-avatar.mateo{background:var(--gold);color:var(--accent);}
+    .cq-name{font-size:12px;font-weight:700;color:var(--text-primary);font-family:Arial,sans-serif;}
+    .cq-badge{font-size:9px;background:var(--gold);color:#1c2b3a;padding:1px 6px;border-radius:8px;font-weight:700;font-family:Arial,sans-serif;}
+    .cq-badge.green{background:#2e7d32;color:#fff;}
+    .cq-time{font-size:10px;color:var(--text-secondary);margin-left:auto;font-family:Arial,sans-serif;}
+    .cq-text{font-size:13px;color:var(--text-primary);line-height:1.65;}
+    .cq-actions{display:flex;gap:10px;margin-top:7px;align-items:center;}
+    .cq-action-btn{background:none;border:none;font-size:11px;color:var(--text-secondary);cursor:pointer;font-family:Arial,sans-serif;padding:0;transition:color .15s;}
+    .cq-action-btn:hover{color:var(--gold);}
+    .cq-status{font-size:10px;padding:2px 7px;border-radius:8px;margin-left:auto;font-family:Arial,sans-serif;font-weight:600;}
+    .cq-status.pending{background:#fff3e0;color:#e65100;}
+    .cq-status.answered{background:#e8f5e9;color:#2e7d32;}
+    .cq-delete{position:absolute;top:8px;right:8px;background:none;border:none;font-size:13px;cursor:pointer;opacity:.4;transition:opacity .2s;}
+    .cq-delete:hover{opacity:1;}
+
+    /* Replies */
+    .cq-replies{margin-top:8px;display:flex;flex-direction:column;gap:6px;}
+    .cq-reply{margin-left:12px;background:var(--bg-primary);border-radius:6px;padding:8px 10px;border:0.5px solid var(--border-color);}
+    .cq-reply.mateo-reply{border-left:3px solid var(--gold);background:#fdf8ee;}
+    body.dark-mode .cq-reply.mateo-reply{background:#1a1a0a;}
+    .cq-reply-input{margin-left:12px;margin-top:6px;display:none;}
+    .cq-reply-input.show{display:block;}
+    .cq-reply-input textarea{width:100%;padding:6px 8px;border:1px solid var(--border-color);border-radius:6px;background:var(--bg-scripture);color:var(--text-primary);font-size:12px;font-family:'Lora',Georgia,serif;resize:none;height:48px;margin-bottom:4px;}
+    .cq-reply-input button{background:var(--accent);color:#fff;border:none;padding:5px 12px;border-radius:5px;font-size:11px;cursor:pointer;font-family:Arial,sans-serif;}
+
+    .cq-empty{text-align:center;color:var(--text-secondary);font-size:13px;padding:24px 0;font-family:Arial,sans-serif;}
+    .cq-loading{text-align:center;color:var(--text-secondary);font-size:12px;padding:16px 0;font-family:Arial,sans-serif;}
   </style>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -490,11 +552,34 @@
       Open the Menu → choose a book → select a chapter.
     </p>
     <div id="summaryContent" style="display:none;"></div>
-    <div class="section">
-      <h3>💬 Comments</h3>
-      <textarea id="commentInput" placeholder="Leave a comment…"></textarea>
-      <button onclick="addComment()">Post Comment</button>
-      <div class="list" id="commentsList"></div>
+    <div class="cq-section" id="cqSection" style="display:none;">
+      <div class="cq-tabs">
+        <button class="cq-tab active" id="cqTabComments" onclick="switchCqTab('comments')">💬 Comments</button>
+        <button class="cq-tab"        id="cqTabQuestions" onclick="switchCqTab('questions')">❓ Questions</button>
+      </div>
+      <!-- Identity setup (shown if no identity saved) -->
+      <div class="identity-setup" id="identitySetup" style="display:none;">
+        <strong>📖 Join the conversation</strong>
+        <p>Pick a display name and a 4-digit PIN.<br>No account needed.</p>
+        <div class="id-row">
+          <input class="id-input" id="idName" placeholder="Your name e.g. Thabo M." autocomplete="off">
+          <input class="id-input pin" id="idPin" placeholder="PIN" type="password" maxlength="4">
+        </div>
+        <button class="id-btn" onclick="saveIdentity()">Get Started 🙏</button>
+      </div>
+      <!-- Post input -->
+      <div class="cq-input-wrap" id="cqInputWrap">
+        <div class="cq-who" id="cqWhoLabel">
+          Posting as <strong id="cqUserName">…</strong>
+          <a onclick="resetIdentity()">Change</a>
+        </div>
+        <textarea class="cq-textarea" id="cqTextarea" placeholder="Write a comment…"></textarea>
+        <button class="cq-post-btn" id="cqPostBtn" onclick="postCqItem()">Post Comment</button>
+      </div>
+      <!-- Thread -->
+      <div class="cq-thread" id="cqThread">
+        <div class="cq-loading">Loading…</div>
+      </div>
     </div>
   </div>
 
@@ -505,12 +590,7 @@
       <button class="nav-btn" onclick="navigateChapter(1)">Next →</button>
     </div>
     <div class="chapter-content" id="chapterContent"></div>
-    <div class="section">
-      <h3>❓ Questions</h3>
-      <textarea id="questionInput" placeholder="Ask a question…"></textarea>
-      <button onclick="addQuestion()">Post Question</button>
-      <div class="list" id="questionsList"></div>
-    </div>
+    <!-- Questions moved to left panel cq-section -->
   </div>
 </div>
 
@@ -813,6 +893,7 @@
     closeMenu();
     loadSummary(book, chNum);
     if (currentView === 'split' || currentView === 'scripture') loadChapter();
+    initCqSection();
   }
 
   // ── Summary ───────────────────────────────────────────────────
@@ -1091,21 +1172,203 @@
     results.innerHTML = html;
   }
 
-  function addComment() {
-    const inp = document.getElementById('commentInput');
-    if (!inp.value.trim()) return;
-    const p = document.createElement('p');
-    p.textContent = inp.value.trim();
-    document.getElementById('commentsList').appendChild(p);
-    inp.value = '';
+  // ── Firebase init ────────────────────────────────────────────
+  const firebaseConfig = {
+    databaseURL: "https://bible-summaries-pwa-default-rtdb.firebaseio.com"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // ── Identity (name + PIN) ─────────────────────────────────────
+  function getIdentity() {
+    try { return JSON.parse(localStorage.getItem('cq-identity') || 'null'); } catch(e) { return null; }
   }
-  function addQuestion() {
-    const inp = document.getElementById('questionInput');
-    if (!inp.value.trim()) return;
-    const p = document.createElement('p');
-    p.textContent = inp.value.trim();
-    document.getElementById('questionsList').appendChild(p);
-    inp.value = '';
+  function saveIdentity() {
+    const name = document.getElementById('idName').value.trim();
+    const pin  = document.getElementById('idPin').value.trim();
+    if (!name) { showToast('Please enter your name'); return; }
+    if (pin.length !== 4 || isNaN(pin)) { showToast('PIN must be 4 digits'); return; }
+    localStorage.setItem('cq-identity', JSON.stringify({ name, pin }));
+    document.getElementById('identitySetup').style.display = 'none';
+    document.getElementById('cqInputWrap').style.display = 'block';
+    document.getElementById('cqUserName').textContent = name;
+    showToast('Welcome, ' + name + '! 🙏');
+  }
+  function resetIdentity() {
+    localStorage.removeItem('cq-identity');
+    document.getElementById('identitySetup').style.display = 'block';
+    document.getElementById('cqInputWrap').style.display = 'none';
+  }
+
+  // ── CQ state ──────────────────────────────────────────────────
+  let cqTab = 'comments';
+  let cqListener = null;
+
+  function switchCqTab(tab) {
+    cqTab = tab;
+    document.getElementById('cqTabComments').classList.toggle('active', tab === 'comments');
+    document.getElementById('cqTabQuestions').classList.toggle('active', tab === 'questions');
+    const ta = document.getElementById('cqTextarea');
+    const pb = document.getElementById('cqPostBtn');
+    if (tab === 'comments') {
+      ta.placeholder = 'Write a comment about this chapter…';
+      pb.textContent = 'Post Comment';
+    } else {
+      ta.placeholder = 'Ask Mateo a question about this chapter…';
+      pb.textContent = 'Post Question';
+    }
+    loadCqThread();
+  }
+
+  function initCqSection() {
+    const section = document.getElementById('cqSection');
+    if (!currentBook) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    const identity = getIdentity();
+    if (!identity) {
+      document.getElementById('identitySetup').style.display = 'block';
+      document.getElementById('cqInputWrap').style.display = 'none';
+    } else {
+      document.getElementById('identitySetup').style.display = 'none';
+      document.getElementById('cqInputWrap').style.display = 'block';
+      document.getElementById('cqUserName').textContent = identity.name;
+    }
+    loadCqThread();
+  }
+
+  function cqPath() {
+    const key = currentBook.replace(/ /g,'_') + '_' + currentChapterNum;
+    return `chapters/${key}/${cqTab}`;
+  }
+
+  function loadCqThread() {
+    const thread = document.getElementById('cqThread');
+    thread.innerHTML = '<div class="cq-loading">Loading…</div>';
+    // Detach old listener
+    if (cqListener) { cqListener(); cqListener = null; }
+    const ref = db.ref(cqPath());
+    const handler = ref.on('value', snap => {
+      const data = snap.val() || {};
+      renderCqThread(data);
+    });
+    cqListener = () => ref.off('value', handler);
+  }
+
+  function renderCqThread(data) {
+    const thread = document.getElementById('cqThread');
+    const items  = Object.entries(data).sort((a,b) => a[1].timestamp - b[1].timestamp);
+    if (!items.length) {
+      const label = cqTab === 'comments' ? 'No comments yet. Be the first! 🙏' : 'No questions yet. Ask away! 🙏';
+      thread.innerHTML = `<div class="cq-empty">${label}</div>`;
+      return;
+    }
+    const identity = getIdentity();
+    thread.innerHTML = items.map(([id, item]) => {
+      const isMateo  = item.name === 'Mateo';
+      const isOwn    = identity && item.name === identity.name;
+      const initials = item.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+      const timeStr  = item.timestamp ? new Date(item.timestamp).toLocaleDateString('en-ZA',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+      const statusBadge = cqTab === 'questions'
+        ? `<span class="cq-status ${item.answered?'answered':'pending'}">${item.answered?'✅ Answered':'⏳ Pending'}</span>` : '';
+      // Replies
+      const replies = item.replies ? Object.entries(item.replies)
+        .sort((a,b) => a[1].timestamp - b[1].timestamp)
+        .map(([rid, r]) => {
+          const rIsMateo  = r.name === 'Mateo';
+          const rInitials = r.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+          return `<div class="cq-reply ${rIsMateo?'mateo-reply':''}">
+            <div class="cq-item-header">
+              <div class="cq-avatar ${rIsMateo?'mateo':''}">${rInitials}</div>
+              <span class="cq-name">${esc(r.name)}</span>
+              ${rIsMateo ? '<span class="cq-badge">✅ Preacher</span>' : ''}
+              <span class="cq-time">${new Date(r.timestamp).toLocaleDateString('en-ZA',{day:'numeric',month:'short'})}</span>
+            </div>
+            <div class="cq-text">${esc(r.text)}</div>
+          </div>`;
+        }).join('') : '';
+
+      return `
+        <div class="cq-item ${cqTab==='questions'?(item.answered?'answered':'question'):''}" id="cqitem-${id}">
+          ${isOwn ? `<button class="cq-delete" onclick="deleteCqItem('${id}')" title="Delete">🗑</button>` : ''}
+          <div class="cq-item-header">
+            <div class="cq-avatar ${isMateo?'mateo':''}">${initials}</div>
+            <span class="cq-name">${esc(item.name)}</span>
+            ${isMateo ? '<span class="cq-badge">✅ Preacher</span>' : ''}
+            <span class="cq-time">${timeStr}</span>
+            ${statusBadge}
+          </div>
+          <div class="cq-text">${esc(item.text)}</div>
+          <div class="cq-actions">
+            <button class="cq-action-btn" onclick="likeCqItem('${id}')">👍 ${item.likes||0}</button>
+            <button class="cq-action-btn" onclick="toggleReplyInput('${id}')">↩ Reply</button>
+          </div>
+          <div class="cq-replies">${replies}</div>
+          <div class="cq-reply-input" id="replyInput-${id}">
+            <textarea placeholder="Write a reply…"></textarea>
+            <button onclick="postReply('${id}')">Post Reply</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function postCqItem() {
+    const identity = getIdentity();
+    if (!identity) { showToast('Please set up your name first'); return; }
+    const text = document.getElementById('cqTextarea').value.trim();
+    if (!text) return;
+    const btn = document.getElementById('cqPostBtn');
+    btn.disabled = true;
+    db.ref(cqPath()).push({
+      name: identity.name,
+      text,
+      timestamp: Date.now(),
+      likes: 0,
+      answered: false
+    }).then(() => {
+      document.getElementById('cqTextarea').value = '';
+      btn.disabled = false;
+      showToast('Posted! 🙏');
+    }).catch(e => {
+      btn.disabled = false;
+      showToast('Failed to post. Check connection.');
+    });
+  }
+
+  function deleteCqItem(id) {
+    const identity = getIdentity();
+    if (!identity) return;
+    const pinInput = prompt('Enter your PIN to delete:');
+    if (pinInput !== identity.pin) { showToast('Incorrect PIN'); return; }
+    db.ref(cqPath() + '/' + id).remove();
+    showToast('Deleted');
+  }
+
+  function likeCqItem(id) {
+    const ref = db.ref(cqPath() + '/' + id + '/likes');
+    ref.transaction(likes => (likes || 0) + 1);
+  }
+
+  function toggleReplyInput(id) {
+    const el = document.getElementById('replyInput-' + id);
+    el.classList.toggle('show');
+    if (el.classList.contains('show')) el.querySelector('textarea').focus();
+  }
+
+  function postReply(id) {
+    const identity = getIdentity();
+    if (!identity) { showToast('Please set up your name first'); return; }
+    const el   = document.getElementById('replyInput-' + id);
+    const text = el.querySelector('textarea').value.trim();
+    if (!text) return;
+    db.ref(cqPath() + '/' + id + '/replies').push({
+      name: identity.name,
+      text,
+      timestamp: Date.now()
+    }).then(() => {
+      el.querySelector('textarea').value = '';
+      el.classList.remove('show');
+      showToast('Reply posted! 🙏');
+    });
   }
 
   // ── Init ──────────────────────────────────────────────────────
