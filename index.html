@@ -378,6 +378,44 @@
       opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;
     }
     .copy-toast.show{opacity:1;}
+
+    /* ── Search results ──────────────────────────────────────── */
+    #searchResults{max-height:380px;overflow-y:auto;}
+    .search-section-title{
+      font-size:10px;text-transform:uppercase;letter-spacing:.08em;
+      color:var(--gold);font-weight:bold;font-family:Arial,sans-serif;
+      padding:8px 16px 4px;border-top:1px solid var(--border-color);
+    }
+    .search-section-title:first-child{border-top:none;}
+    .search-book-result{
+      padding:9px 16px;cursor:pointer;font-size:14px;
+      font-family:Arial,sans-serif;transition:background .15s;
+      display:flex;align-items:center;gap:8px;
+    }
+    .search-book-result:hover{background:#f0ede6;}
+    body.dark-mode .search-book-result:hover{background:#2a2a2a;}
+    .search-book-result .sbr-book{font-weight:600;color:var(--text-primary);}
+    .search-book-result .sbr-testament{font-size:11px;color:var(--text-secondary);}
+    .search-verse-result{
+      padding:9px 16px;cursor:pointer;font-size:13px;
+      font-family:Arial,sans-serif;transition:background .15s;
+      border-bottom:1px solid var(--border-color);
+    }
+    .search-verse-result:hover{background:#f0ede6;}
+    body.dark-mode .search-verse-result:hover{background:#2a2a2a;}
+    .search-verse-result .svr-ref{font-size:11px;font-weight:bold;color:var(--gold);margin-bottom:3px;}
+    .search-verse-result .svr-text{color:var(--text-secondary);line-height:1.5;}
+    .svr-text mark{background:#fff176;color:#000;border-radius:2px;padding:0 1px;}
+    body.dark-mode .svr-text mark{background:#5a5000;color:#fff;}
+    .search-empty{padding:20px;text-align:center;color:var(--text-secondary);font-size:13px;font-family:Arial,sans-serif;}
+    .search-loading{padding:16px;text-align:center;color:var(--text-secondary);font-size:13px;font-family:Arial,sans-serif;}
+    .search-more{
+      padding:10px 16px;text-align:center;
+      font-size:12px;color:var(--gold);cursor:pointer;
+      font-family:Arial,sans-serif;font-weight:bold;
+      border-top:1px solid var(--border-color);
+    }
+    .search-more:hover{background:#f0ede6;}
   </style>
 </head>
 <body>
@@ -402,13 +440,16 @@
       <button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
       <div class="dropdown" id="dropdownMenu">
         <div class="dropdown-search">
-          <input type="text" id="searchInput" placeholder="Search books…" autocomplete="off">
+          <input type="text" id="searchInput" placeholder="Search books or verses…" autocomplete="off">
         </div>
-        <ul class="testament-tabs">
-          <li id="tabOld" class="active" onclick="showBooks('old')">Old Testament</li>
-          <li id="tabNew" onclick="showBooks('new')">New Testament</li>
-        </ul>
-        <div id="booksList"></div>
+        <div id="searchResults" style="display:none;"></div>
+        <div id="booksBrowse">
+          <ul class="testament-tabs">
+            <li id="tabOld" class="active" onclick="showBooks('old')">Old Testament</li>
+            <li id="tabNew" onclick="showBooks('new')">New Testament</li>
+          </ul>
+          <div id="booksList"></div>
+        </div>
       </div>
     </div>
 
@@ -884,12 +925,171 @@
     selectChapter(currentBook, next);
   }
 
+  let searchTimer = null;
+
   document.getElementById('searchInput').addEventListener('input', function() {
-    const q = this.value.toLowerCase();
-    document.querySelectorAll('#booksList > ul > li').forEach(li => {
-      li.style.display = li.dataset.book.toLowerCase().includes(q) ? '' : 'none';
-    });
+    const q = this.value.trim();
+    clearTimeout(searchTimer);
+    if (!q) {
+      // Show normal browse view
+      document.getElementById('searchResults').style.display = 'none';
+      document.getElementById('booksBrowse').style.display = 'block';
+      return;
+    }
+    document.getElementById('searchResults').style.display = 'block';
+    document.getElementById('booksBrowse').style.display = 'none';
+    document.getElementById('searchResults').innerHTML = '<div class="search-loading">Searching…</div>';
+    // Debounce verse search by 400ms
+    searchTimer = setTimeout(() => runSearch(q), 400);
   });
+
+  async function runSearch(q) {
+    const ql = q.toLowerCase();
+    const results = document.getElementById('searchResults');
+    let html = '';
+
+    // ── Book matches (both testaments) ──────────────────────────
+    const allBooks = [
+      ...Object.keys(bibleStructure.old).map(b => ({book:b, testament:'Old Testament'})),
+      ...Object.keys(bibleStructure.new).map(b => ({book:b, testament:'New Testament'})),
+    ];
+    const bookMatches = allBooks.filter(b => b.book.toLowerCase().includes(ql));
+    if (bookMatches.length) {
+      html += '<div class="search-section-title">📚 Books</div>';
+      html += bookMatches.map(b => `
+        <div class="search-book-result" onclick="searchSelectBook('${b.book}')">
+          <span class="sbr-book">${b.book}</span>
+          <span class="sbr-testament">${b.testament}</span>
+        </div>`).join('');
+    }
+
+    // ── Verse search ─────────────────────────────────────────────
+    if (q.length >= 3) {
+      try {
+        const version = document.getElementById('versionSelect').value;
+        const bible   = await loadBibleVersion(version);
+        const matches = [];
+        for (const key of Object.keys(bible)) {
+          for (const v of bible[key]) {
+            if (v.text.toLowerCase().includes(ql)) {
+              const [book, chapter] = key.split(':');
+              matches.push({ book, chapter: parseInt(chapter), verse: v.verse, text: v.text });
+              if (matches.length >= 50) break;
+            }
+          }
+          if (matches.length >= 50) break;
+        }
+        if (matches.length) {
+          const shown = matches.slice(0, 15);
+          html += `<div class="search-section-title">📖 Verses (${matches.length}${matches.length===50?'+':''} found)</div>`;
+          html += shown.map(m => {
+            const highlighted = esc(m.text).replace(
+              new RegExp(escRe(esc(q)), 'gi'),
+              match => `<mark>${match}</mark>`
+            );
+            return `
+            <div class="search-verse-result" onclick="searchSelectVerse('${m.book}',${m.chapter},${m.verse})">
+              <div class="svr-ref">${m.book} ${m.chapter}:${m.verse} (${version.toUpperCase()})</div>
+              <div class="svr-text">${highlighted}</div>
+            </div>`;
+          }).join('');
+          if (matches.length > 15) {
+            html += `<div class="search-more" onclick="showMoreResults('${encodeURIComponent(q)}')">Show all ${matches.length} results ↓</div>`;
+          }
+        } else if (!bookMatches.length) {
+          html += `<div class="search-empty">No results for "<strong>${esc(q)}</strong>"</div>`;
+        }
+      } catch(e) {
+        html += '<div class="search-empty">Load a Bible version first to search verses.</div>';
+      }
+    }
+
+    if (!html) html = `<div class="search-empty">Type at least 3 characters to search verses.</div>`;
+    results.innerHTML = html;
+  }
+
+  function searchSelectBook(book) {
+    const testament = bibleStructure.old[book] ? 'old' : 'new';
+    // Switch to correct testament tab and open book
+    showBooks(testament);
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchResults').style.display = 'none';
+    document.getElementById('booksBrowse').style.display = 'block';
+    setTimeout(() => {
+      const bookLi = [...document.querySelectorAll('#booksList > ul > li')]
+        .find(li => li.dataset.book === book);
+      if (bookLi) bookLi.click();
+    }, 50);
+  }
+
+  function searchSelectVerse(book, chapter, verse) {
+    closeMenu();
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchResults').style.display = 'none';
+    document.getElementById('booksBrowse').style.display = 'block';
+    // Navigate to chapter then scroll to verse
+    const testament = bibleStructure.old[book] ? 'old' : 'new';
+    showBooks(testament);
+    setTimeout(() => {
+      const bookLi = [...document.querySelectorAll('#booksList > ul > li')]
+        .find(li => li.dataset.book === book);
+      if (bookLi) {
+        bookLi.click();
+        setTimeout(() => {
+          const chLi = document.querySelectorAll('.chapter-list li')[chapter - 1];
+          if (chLi) {
+            chLi.click();
+            // Scroll to specific verse after chapter loads
+            setTimeout(() => {
+              const verseEls = document.querySelectorAll('#chapterContent .verse');
+              const target   = [...verseEls].find(el => parseInt(el.querySelector('.verse-number')?.textContent) === verse);
+              if (target) {
+                target.scrollIntoView({behavior:'smooth', block:'center'});
+                target.style.transition = 'background .3s';
+                target.style.background = '#fff9c4';
+                setTimeout(() => target.style.background = '', 2000);
+              }
+            }, 600);
+          }
+        }, 120);
+      }
+    }, 60);
+  }
+
+  function showMoreResults(encodedQ) {
+    // Expand to show all results inline
+    const q = decodeURIComponent(encodedQ);
+    runSearchFull(q);
+  }
+
+  async function runSearchFull(q) {
+    const ql = q.toLowerCase();
+    const version = document.getElementById('versionSelect').value;
+    const bible   = await loadBibleVersion(version);
+    const matches = [];
+    for (const key of Object.keys(bible)) {
+      for (const v of bible[key]) {
+        if (v.text.toLowerCase().includes(ql)) {
+          const [book, chapter] = key.split(':');
+          matches.push({ book, chapter: parseInt(chapter), verse: v.verse, text: v.text });
+        }
+      }
+    }
+    const results = document.getElementById('searchResults');
+    let html = `<div class="search-section-title">📖 All verses (${matches.length} found)</div>`;
+    html += matches.map(m => {
+      const highlighted = esc(m.text).replace(
+        new RegExp(escRe(esc(q)), 'gi'),
+        match => `<mark>${match}</mark>`
+      );
+      return `
+      <div class="search-verse-result" onclick="searchSelectVerse('${m.book}',${m.chapter},${m.verse})">
+        <div class="svr-ref">${m.book} ${m.chapter}:${m.verse} (${version.toUpperCase()})</div>
+        <div class="svr-text">${highlighted}</div>
+      </div>`;
+    }).join('');
+    results.innerHTML = html;
+  }
 
   function addComment() {
     const inp = document.getElementById('commentInput');
@@ -1166,9 +1366,9 @@ ${APP_CREDIT}`;
   function shareSummary() {
     shareMode = 'summary';
     const title = `${currentBook} ${currentChapterNum} — Bible Summary`;
-    shareContent = `📖 ${title}
-
-${APP_CREDIT}`;
+    const contEl = document.getElementById('summaryContent');
+    const rawText = contEl ? contEl.innerText.trim() : '';
+    shareContent = `📖 ${title}\n\n${rawText}\n\n${APP_CREDIT}`;
     document.getElementById('sharePopupTitle').textContent = 'Share Summary';
     const btn = document.getElementById('summaryShareBtn');
     positionSharePopup(btn);
