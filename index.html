@@ -251,6 +251,133 @@
     .install-cta:hover{opacity:.85;}
     .install-skip{background:transparent;border:1px solid rgba(255,255,255,.2);color:#888;padding:12px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-family:Arial,sans-serif;transition:all .2s;white-space:nowrap;}
     .install-skip:hover{color:#fff;border-color:rgba(255,255,255,.4);}
+
+    /* ── Highlight colours ───────────────────────────────────── */
+    .hl-yellow{background:#fff9c4!important;border-left-color:#f9a825!important;}
+    .hl-green {background:#dcedc8!important;border-left-color:#558b2f!important;}
+    .hl-pink  {background:#fce4ec!important;border-left-color:#c2185b!important;}
+    .hl-blue  {background:#e3f2fd!important;border-left-color:#1565c0!important;}
+    body.dark-mode .hl-yellow{background:#3d3000!important;}
+    body.dark-mode .hl-green {background:#1b3a00!important;}
+    body.dark-mode .hl-pink  {background:#3d0018!important;}
+    body.dark-mode .hl-blue  {background:#00213d!important;}
+    .verse.bookmarked::after{content:'🔖';position:absolute;right:8px;top:8px;font-size:13px;}
+    .verse.has-note::before{content:'';position:absolute;right:28px;top:12px;width:7px;height:7px;border-radius:50%;background:var(--gold);}
+
+    /* ── Verse action popup ──────────────────────────────────── */
+    .verse-popup{
+      position:fixed;z-index:10002;
+      background:var(--bg-scripture);
+      border:1px solid var(--border-color);
+      border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.25);
+      padding:10px;min-width:220px;display:none;
+      font-family:Arial,sans-serif;
+    }
+    .verse-popup.show{display:block;}
+    .pop-ref{font-size:11px;color:var(--gold);font-weight:bold;padding:0 4px 8px;border-bottom:1px solid var(--border-color);margin-bottom:8px;}
+    .pop-actions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+    .pop-btn{
+      flex:1;min-width:90px;
+      background:var(--bg-secondary);color:var(--text-primary);
+      border:1px solid var(--border-color);border-radius:8px;
+      padding:8px 6px;font-size:12px;cursor:pointer;
+      font-family:Arial,sans-serif;text-align:center;
+      transition:background .15s;
+    }
+    .pop-btn:hover{background:var(--gold);color:#1c2b3a;border-color:var(--gold);}
+    .pop-btn.active{background:var(--gold);color:#1c2b3a;border-color:var(--gold);}
+    .hl-swatches{display:none;gap:8px;padding:6px 4px;flex-wrap:wrap;}
+    .hl-swatches.show{display:flex;}
+    .hl-swatch{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .15s;}
+    .hl-swatch:hover{transform:scale(1.2);}
+    .hl-swatch.yellow{background:#fff176;border-color:#f9a825;}
+    .hl-swatch.green {background:#a5d6a7;border-color:#558b2f;}
+    .hl-swatch.pink  {background:#f48fb1;border-color:#c2185b;}
+    .hl-swatch.blue  {background:#90caf9;border-color:#1565c0;}
+    .hl-swatch.clear {background:#eee;border-color:#aaa;font-size:14px;display:flex;align-items:center;justify-content:center;}
+    .pop-note-area{width:100%;padding:8px;border:1px solid var(--border-color);border-radius:6px;background:var(--bg-primary);color:var(--text-primary);font-family:'Lora',Georgia,serif;font-size:13px;resize:vertical;min-height:60px;margin-bottom:6px;display:none;}
+    .pop-note-area.show{display:block;}
+    .pop-save-note{background:var(--gold);color:#1c2b3a;border:none;padding:6px 14px;border-radius:6px;font-weight:bold;font-size:12px;cursor:pointer;display:none;}
+    .pop-save-note.show{display:block;}
+
+    /* ── Share popup ─────────────────────────────────────────── */
+    .share-popup{
+      position:fixed;z-index:10002;
+      background:var(--bg-scripture);
+      border:1px solid var(--border-color);
+      border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.25);
+      padding:12px;min-width:200px;display:none;
+      font-family:Arial,sans-serif;
+    }
+    .share-popup.show{display:block;}
+    .share-title{font-size:11px;color:var(--gold);font-weight:bold;padding:0 4px 8px;border-bottom:1px solid var(--border-color);margin-bottom:8px;}
+    .share-btn{
+      display:flex;align-items:center;gap:10px;
+      width:100%;background:transparent;border:none;
+      padding:9px 8px;cursor:pointer;border-radius:7px;
+      font-size:13px;color:var(--text-primary);
+      font-family:Arial,sans-serif;text-align:left;
+      transition:background .15s;
+    }
+    .share-btn:hover{background:var(--bg-secondary);}
+    .share-btn span{font-size:18px;width:24px;text-align:center;}
+
+    /* ── Bookmarks/Highlights panel ──────────────────────────── */
+    .panel-overlay{display:none;position:fixed;inset:0;z-index:9990;background:rgba(0,0,0,.4);}
+    .panel-overlay.show{display:block;}
+    .bh-panel{
+      position:fixed;top:0;right:-360px;width:340px;max-width:95vw;
+      height:100%;background:var(--bg-primary);
+      z-index:9991;box-shadow:-4px 0 24px rgba(0,0,0,.2);
+      display:flex;flex-direction:column;
+      transition:right .35s cubic-bezier(.4,0,.2,1);
+      font-family:Arial,sans-serif;
+    }
+    .bh-panel.open{right:0;}
+    .bh-header{
+      background:var(--accent);color:#fff;
+      padding:16px;display:flex;align-items:center;
+      justify-content:space-between;border-bottom:3px solid var(--gold);
+      flex-shrink:0;
+    }
+    .bh-header h3{font-size:15px;font-family:'Permanent Marker',cursive;font-weight:normal;}
+    .bh-close{background:transparent;border:none;color:#fff;font-size:20px;cursor:pointer;padding:2px 6px;}
+    .bh-tabs{display:flex;border-bottom:1px solid var(--border-color);flex-shrink:0;}
+    .bh-tab{flex:1;padding:10px;text-align:center;cursor:pointer;font-size:12px;font-weight:bold;color:var(--text-secondary);border:none;background:transparent;border-bottom:2px solid transparent;transition:all .2s;}
+    .bh-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+    .bh-body{flex:1;overflow-y:auto;padding:10px;}
+    .bh-empty{text-align:center;color:var(--text-secondary);font-size:13px;padding:40px 20px;line-height:1.8;}
+    .bh-item{
+      background:var(--bg-secondary);border-radius:8px;
+      padding:10px 12px;margin-bottom:8px;cursor:pointer;
+      border-left:4px solid var(--gold);position:relative;
+      transition:background .15s;
+    }
+    .bh-item:hover{background:var(--verse-hover);}
+    .bh-item-ref{font-size:11px;font-weight:bold;color:var(--gold);margin-bottom:3px;}
+    .bh-item-text{font-size:12px;color:var(--text-primary);line-height:1.5;}
+    .bh-item-note{font-size:11px;color:var(--text-secondary);font-style:italic;margin-top:5px;border-top:1px solid var(--border-color);padding-top:5px;}
+    .bh-item-del{position:absolute;top:8px;right:8px;background:transparent;border:none;cursor:pointer;font-size:14px;opacity:.5;}
+    .bh-item-del:hover{opacity:1;}
+    .bh-export{margin:10px;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:8px;width:calc(100% - 20px);cursor:pointer;font-size:13px;font-family:Arial,sans-serif;font-weight:bold;}
+
+    /* ── Summary share button ────────────────────────────────── */
+    .summary-share-btn{
+      background:transparent;border:1px solid var(--border-color);
+      color:var(--text-secondary);padding:6px 12px;border-radius:6px;
+      cursor:pointer;font-size:12px;font-family:Arial,sans-serif;
+      margin-bottom:12px;transition:all .2s;display:inline-flex;align-items:center;gap:6px;
+    }
+    .summary-share-btn:hover{background:var(--gold);color:#1c2b3a;border-color:var(--gold);}
+
+    /* ── Toast notification ──────────────────────────────────── */
+    .copy-toast{
+      position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+      background:#333;color:#fff;padding:10px 20px;border-radius:20px;
+      font-size:13px;font-family:Arial,sans-serif;z-index:10003;
+      opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;
+    }
+    .copy-toast.show{opacity:1;}
   </style>
 </head>
 <body>
@@ -293,6 +420,7 @@
 
     <div class="topbar-right">
       <button class="votd-btn" onclick="showVerseOfDay()" title="Verse of the Day">✨</button>
+      <button class="votd-btn" onclick="openBhPanel('bookmarks')" title="Bookmarks &amp; Highlights">🔖</button>
       <button class="icon-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
     </div>
   </div>
@@ -301,7 +429,10 @@
 <!-- Main content -->
 <div class="content">
   <div class="left" id="leftPanel">
-    <div class="panel-heading">Scripture Summary</div>
+    <div class="panel-heading" style="display:flex;align-items:center;justify-content:space-between;">
+      <span>Scripture Summary</span>
+      <button class="summary-share-btn" id="summaryShareBtn" onclick="shareSummary()" style="display:none;">↗ Share Summary</button>
+    </div>
     <div class="nav-buttons">
       <button class="nav-btn" id="prevBtn" onclick="navigateChapter(-1)" disabled>← Previous</button>
       <button class="nav-btn" id="nextBtn" onclick="navigateChapter(1)"  disabled>Next →</button>
@@ -650,7 +781,7 @@
     const mdKey  = booksWithSummaries[book];
     if (!mdKey) {
       contEl.style.display='none'; msgEl.style.display='block';
-      msgEl.innerText=`Summaries for ${book} are coming soon!`; return;
+      msgEl.innerText=`Summaries for ${book} are coming soon!`; showSummaryShareBtn(false); return;
     }
     msgEl.style.display='block'; msgEl.innerText='Loading summary…';
     contEl.style.display='none';
@@ -665,6 +796,7 @@
       msgEl.style.display='none'; contEl.style.display='block';
       contEl.innerHTML=html; contEl.scrollTop=0;
       document.getElementById('leftPanel').scrollTop=0;
+      showSummaryShareBtn(true);
       contEl.querySelectorAll('blockquote').forEach(bq => {
         if (bq.textContent.includes('🙏')) bq.classList.add('prayer-block');
       });
@@ -725,9 +857,8 @@
       const verses  = bible[`${jsonBook}:${currentChapterNum}`]
                    || bible[`${jsonBook.replace(/ /g,'')}:${currentChapterNum}`];
       if (verses && verses.length) {
-        content.innerHTML = verses.map(v =>
-          `<div class="verse"><span class="verse-number">${v.verse}</span><span class="verse-text">${esc(v.text)}</span></div>`
-        ).join('');
+        content.innerHTML = '';
+        verses.forEach(v => content.appendChild(buildVerseEl(v)));
       } else {
         content.innerHTML = `<p style="color:#888;font-style:italic">No verses found for ${esc(currentChapter)} in ${version.toUpperCase()}.</p>`;
       }
@@ -844,6 +975,419 @@
     });
   });
 
+
+  // ── App URL ──────────────────────────────────────────────────
+  const APP_URL = 'https://edwin-aws.github.io/files/';
+  const APP_CREDIT = 'via @MateoThePreacher\n' + APP_URL;
+
+  // ── Annotations storage ───────────────────────────────────────
+  function getAnnotations() {
+    try { return JSON.parse(localStorage.getItem('bible-annotations') || '{}'); } catch(e) { return {}; }
+  }
+  function saveAnnotations(data) {
+    localStorage.setItem('bible-annotations', JSON.stringify(data));
+  }
+  function verseKey(book, ch, verse) { return `${book}:${ch}:${verse}`; }
+
+  // ── Build verse element ───────────────────────────────────────
+  function buildVerseEl(v) {
+    const el = document.createElement('div');
+    el.className = 'verse';
+    el.innerHTML = `<span class="verse-number">${v.verse}</span><span class="verse-text">${esc(v.text)}</span>`;
+    const vkey = verseKey(currentBook, currentChapterNum, v.verse);
+    applyAnnotationToEl(el, vkey);
+    // Long-press (touch) + right-click (desktop)
+    let pressTimer = null, pressStartY = 0;
+    el.addEventListener('touchstart', (e) => {
+      pressStartY = e.touches[0].clientY;
+      pressTimer = setTimeout(() => { openVersePopup(el, vkey); }, 500);
+    }, {passive:true});
+    el.addEventListener('touchmove', (e) => {
+      if (pressTimer && Math.abs(e.touches[0].clientY - pressStartY) > 10) {
+        clearTimeout(pressTimer); pressTimer = null;
+      }
+    }, {passive:true});
+    el.addEventListener('touchend',   () => { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } });
+    el.addEventListener('contextmenu', (e) => { e.preventDefault(); openVersePopup(el, vkey); });
+    return el;
+  }
+
+  function applyAnnotationToEl(el, vkey) {
+    const ann = getAnnotations()[vkey] || {};
+    el.classList.remove('hl-yellow','hl-green','hl-pink','hl-blue','bookmarked','has-note');
+    if (ann.highlight) el.classList.add('hl-' + ann.highlight);
+    if (ann.bookmark)  el.classList.add('bookmarked');
+    if (ann.note)      el.classList.add('has-note');
+  }
+
+  // ── Verse popup ───────────────────────────────────────────────
+  let activeVerseEl = null, activeVerseKey = null, activeVerseText = '';
+
+  function openVersePopup(el, vkey) {
+    activeVerseEl  = el;
+    activeVerseKey = vkey;
+    activeVerseText = el.querySelector('.verse-text')?.textContent || '';
+    const parts = vkey.split(':');
+    document.getElementById('popRef').textContent = `${parts[0]} ${parts[1]}:${parts[2]}`;
+    // Update bookmark btn state
+    const ann = getAnnotations()[vkey] || {};
+    const bbtn = document.getElementById('btnBookmark');
+    bbtn.classList.toggle('active', !!ann.bookmark);
+    bbtn.textContent = ann.bookmark ? '🔖 Bookmarked' : '🔖 Bookmark';
+    // Reset sections
+    document.getElementById('hlSwatches').classList.remove('show');
+    document.getElementById('noteText').classList.remove('show');
+    document.getElementById('saveNoteBtn').classList.remove('show');
+    document.getElementById('noteText').value = ann.note || '';
+    // Position popup
+    const popup = document.getElementById('versePopup');
+    popup.classList.add('show');
+    const rect = el.getBoundingClientRect();
+    const pw = 240;
+    let left = Math.min(rect.left, window.innerWidth - pw - 12);
+    let top  = rect.bottom + 6;
+    if (top + 220 > window.innerHeight) top = rect.top - 220;
+    popup.style.left = Math.max(8, left) + 'px';
+    popup.style.top  = Math.max(8, top)  + 'px';
+  }
+
+  function closeVersePopup() {
+    document.getElementById('versePopup').classList.remove('show');
+    activeVerseEl = null; activeVerseKey = null;
+  }
+
+  function toggleHlSwatches() {
+    document.getElementById('hlSwatches').classList.toggle('show');
+    document.getElementById('noteText').classList.remove('show');
+    document.getElementById('saveNoteBtn').classList.remove('show');
+  }
+
+  function applyHighlight(color) {
+    if (!activeVerseKey) return;
+    const data = getAnnotations();
+    if (!data[activeVerseKey]) data[activeVerseKey] = {};
+    if (color) {
+      data[activeVerseKey].highlight = color;
+      data[activeVerseKey].verseText = activeVerseText;
+      data[activeVerseKey].ref = activeVerseKey.split(':').slice(0,2).join(' ') + ':' + activeVerseKey.split(':')[2];
+    } else {
+      delete data[activeVerseKey].highlight;
+    }
+    saveAnnotations(data);
+    if (activeVerseEl) applyAnnotationToEl(activeVerseEl, activeVerseKey);
+    closeVersePopup();
+  }
+
+  function toggleBookmark() {
+    if (!activeVerseKey) return;
+    const data = getAnnotations();
+    if (!data[activeVerseKey]) data[activeVerseKey] = {};
+    const isNow = !data[activeVerseKey].bookmark;
+    data[activeVerseKey].bookmark  = isNow;
+    data[activeVerseKey].verseText = activeVerseText;
+    data[activeVerseKey].ref       = activeVerseKey.split(':').slice(0,2).join(' ') + ':' + activeVerseKey.split(':')[2];
+    saveAnnotations(data);
+    if (activeVerseEl) applyAnnotationToEl(activeVerseEl, activeVerseKey);
+    const bbtn = document.getElementById('btnBookmark');
+    bbtn.classList.toggle('active', isNow);
+    bbtn.textContent = isNow ? '🔖 Bookmarked' : '🔖 Bookmark';
+    showToast(isNow ? '🔖 Bookmarked!' : 'Bookmark removed');
+  }
+
+  function toggleNoteInput() {
+    document.getElementById('hlSwatches').classList.remove('show');
+    const ta = document.getElementById('noteText');
+    const sb = document.getElementById('saveNoteBtn');
+    const showing = ta.classList.toggle('show');
+    sb.classList.toggle('show', showing);
+    if (showing) ta.focus();
+  }
+
+  function saveNote() {
+    if (!activeVerseKey) return;
+    const text = document.getElementById('noteText').value.trim();
+    const data = getAnnotations();
+    if (!data[activeVerseKey]) data[activeVerseKey] = {};
+    if (text) {
+      data[activeVerseKey].note      = text;
+      data[activeVerseKey].verseText = activeVerseText;
+      data[activeVerseKey].ref       = activeVerseKey.split(':').slice(0,2).join(' ') + ':' + activeVerseKey.split(':')[2];
+    } else {
+      delete data[activeVerseKey].note;
+    }
+    saveAnnotations(data);
+    if (activeVerseEl) applyAnnotationToEl(activeVerseEl, activeVerseKey);
+    showToast('📝 Note saved!');
+    closeVersePopup();
+  }
+
+  // Close popup on outside click
+  document.addEventListener('mousedown', (e) => {
+    const popup = document.getElementById('versePopup');
+    const shareP = document.getElementById('sharePopup');
+    if (popup.classList.contains('show') && !popup.contains(e.target)) closeVersePopup();
+    if (shareP.classList.contains('show') && !shareP.contains(e.target)) shareP.classList.remove('show');
+  });
+
+  // ── Copy & Share ──────────────────────────────────────────────
+  let shareMode = 'verse'; // 'verse' or 'summary'
+  let shareContent = '';
+
+  function verseShareText() {
+    const parts = activeVerseKey.split(':');
+    const ref   = `${parts[0]} ${parts[1]}:${parts[2]}`;
+    const ver   = document.getElementById('versionSelect').value.toUpperCase();
+    return `"${activeVerseText}"
+— ${ref} (${ver})
+
+${APP_CREDIT}`;
+  }
+
+  function copyVerse() {
+    const text = verseShareText();
+    navigator.clipboard.writeText(text).then(() => showToast('📋 Verse copied!')).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showToast('📋 Verse copied!');
+    });
+    closeVersePopup();
+  }
+
+  function shareVerse() {
+    shareMode = 'verse';
+    shareContent = verseShareText();
+    positionSharePopup(document.getElementById('versePopup'));
+    closeVersePopup();
+    document.getElementById('sharePopupTitle').textContent = 'Share Verse';
+    document.getElementById('sharePopup').classList.add('show');
+  }
+
+  function shareSummary() {
+    shareMode = 'summary';
+    const title = `${currentBook} ${currentChapterNum} — Bible Summary`;
+    shareContent = `📖 ${title}
+
+${APP_CREDIT}`;
+    document.getElementById('sharePopupTitle').textContent = 'Share Summary';
+    const btn = document.getElementById('summaryShareBtn');
+    positionSharePopup(btn);
+    document.getElementById('sharePopup').classList.add('show');
+  }
+
+  function positionSharePopup(anchor) {
+    const popup = document.getElementById('sharePopup');
+    const rect  = anchor ? anchor.getBoundingClientRect() : {left:20, bottom:100};
+    let left = Math.min(rect.left, window.innerWidth - 220);
+    let top  = rect.bottom + 6;
+    if (top + 280 > window.innerHeight) top = (rect.top || 200) - 280;
+    popup.style.left = Math.max(8, left) + 'px';
+    popup.style.top  = Math.max(8, top)  + 'px';
+  }
+
+  async function doShare(method) {
+    document.getElementById('sharePopup').classList.remove('show');
+    const text = shareContent;
+    if (method === 'copy') {
+      navigator.clipboard.writeText(text).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta);
+      });
+      showToast('📋 Copied!');
+    } else if (method === 'whatsapp') {
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    } else if (method === 'native') {
+      if (navigator.share) {
+        navigator.share({ title: 'Bible Summaries by Mateo', text }).catch(() => {});
+      } else { showToast('Share not supported on this browser'); }
+    } else if (method === 'email') {
+      const subject = shareMode === 'verse' ? 'Bible verse for you' : `Bible Summary — ${currentBook} ${currentChapterNum}`;
+      window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`);
+    } else if (method === 'image') {
+      shareAsImage(text);
+    }
+  }
+
+  function shareAsImage(text) {
+    const canvas = document.getElementById('shareCanvas');
+    const W = 800, H = 480;
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    // Background
+    ctx.fillStyle = '#1c2b3a';
+    ctx.fillRect(0, 0, W, H);
+    // Gold border
+    ctx.strokeStyle = '#c9a84c'; ctx.lineWidth = 6;
+    ctx.strokeRect(16, 16, W-32, H-32);
+    // Icon
+    ctx.font = '48px serif'; ctx.textAlign = 'center';
+    ctx.fillText('📖', W/2, 70);
+    // Quote text — wrap it
+    ctx.fillStyle = '#fff'; ctx.font = '22px Georgia,serif';
+    ctx.textAlign = 'center';
+    const lines = wrapText(ctx, text.split('\n')[0].replace(/"/g,''), W - 100, 22);
+    lines.forEach((line, i) => ctx.fillText(line, W/2, 120 + i*34));
+    // Reference
+    const refLine = text.split('\n')[1] || '';
+    ctx.fillStyle = '#c9a84c'; ctx.font = 'bold 18px Arial';
+    ctx.fillText(refLine, W/2, 120 + lines.length * 34 + 30);
+    // Credit
+    ctx.fillStyle = '#aaa'; ctx.font = '14px Arial';
+    ctx.fillText('@MateoThePreacher  ·  ' + APP_URL, W/2, H - 40);
+    // Download
+    const a = document.createElement('a');
+    a.download = 'bible-verse.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+    showToast('🖼 Image saved!');
+  }
+
+  function wrapText(ctx, text, maxW, fontSize) {
+    const words = text.split(' ');
+    const lines = []; let cur = '';
+    for (const w of words) {
+      const test = cur ? cur + ' ' + w : w;
+      if (ctx.measureText(test).width > maxW) { lines.push(cur); cur = w; }
+      else cur = test;
+    }
+    if (cur) lines.push(cur);
+    return lines;
+  }
+
+  // ── Toast ─────────────────────────────────────────────────────
+  function showToast(msg) {
+    const t = document.getElementById('copyToast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  // ── Bookmarks/Highlights panel ────────────────────────────────
+  let bhTab = 'bookmarks';
+
+  function openBhPanel(tab) {
+    bhTab = tab || 'bookmarks';
+    ['bookmarks','notes','highlights'].forEach(t => {
+      document.getElementById('bhtab-' + t).classList.toggle('active', t === bhTab);
+    });
+    renderBhPanel();
+    document.getElementById('bhPanel').classList.add('open');
+    document.getElementById('panelOverlay').classList.add('show');
+  }
+
+  function closeBhPanel() {
+    document.getElementById('bhPanel').classList.remove('open');
+    document.getElementById('panelOverlay').classList.remove('show');
+  }
+
+  function switchBhTab(tab) {
+    bhTab = tab;
+    ['bookmarks','notes','highlights'].forEach(t => {
+      document.getElementById('bhtab-' + t).classList.toggle('active', t === tab);
+    });
+    renderBhPanel();
+  }
+
+  function renderBhPanel() {
+    const body   = document.getElementById('bhBody');
+    const data   = getAnnotations();
+    const keys   = Object.keys(data);
+    const colors = {yellow:'#fff9c4',green:'#dcedc8',pink:'#fce4ec',blue:'#e3f2fd'};
+    let html = '';
+
+    if (bhTab === 'bookmarks') {
+      const bm = keys.filter(k => data[k].bookmark);
+      if (!bm.length) { body.innerHTML = '<div class="bh-empty">No bookmarks yet.<br><small>Long-press any verse to bookmark it.</small></div>'; return; }
+      html = bm.map(k => `
+        <div class="bh-item" onclick="navigateToVerse('${k}')">
+          <button class="bh-item-del" onclick="event.stopPropagation();deleteAnn('${k}','bookmark')">🗑</button>
+          <div class="bh-item-ref">${data[k].ref || k}</div>
+          <div class="bh-item-text">${esc(data[k].verseText || '')}</div>
+        </div>`).join('');
+    } else if (bhTab === 'notes') {
+      const notes = keys.filter(k => data[k].note);
+      if (!notes.length) { body.innerHTML = '<div class="bh-empty">No notes yet.<br><small>Long-press any verse to add a note.</small></div>'; return; }
+      html = notes.map(k => `
+        <div class="bh-item" onclick="navigateToVerse('${k}')">
+          <button class="bh-item-del" onclick="event.stopPropagation();deleteAnn('${k}','note')">🗑</button>
+          <div class="bh-item-ref">${data[k].ref || k}</div>
+          <div class="bh-item-text">${esc(data[k].verseText || '')}</div>
+          <div class="bh-item-note">📝 ${esc(data[k].note)}</div>
+        </div>`).join('');
+    } else {
+      const hl = keys.filter(k => data[k].highlight);
+      if (!hl.length) { body.innerHTML = '<div class="bh-empty">No highlights yet.<br><small>Long-press any verse to highlight it.</small></div>'; return; }
+      html = hl.map(k => `
+        <div class="bh-item" style="border-left-color:${colors[data[k].highlight]||'#c9a84c'}" onclick="navigateToVerse('${k}')">
+          <button class="bh-item-del" onclick="event.stopPropagation();deleteAnn('${k}','highlight')">🗑</button>
+          <div class="bh-item-ref">${data[k].ref || k}</div>
+          <div class="bh-item-text" style="background:${colors[data[k].highlight]||''};padding:4px 6px;border-radius:4px;">${esc(data[k].verseText || '')}</div>
+        </div>`).join('');
+    }
+    body.innerHTML = html;
+  }
+
+  function deleteAnn(key, type) {
+    const data = getAnnotations();
+    if (data[key]) {
+      delete data[key][type];
+      if (!Object.keys(data[key]).length) delete data[key];
+      saveAnnotations(data);
+    }
+    // Refresh any visible verse
+    document.querySelectorAll('.verse').forEach(el => {
+      const vnum = el.querySelector('.verse-number')?.textContent;
+      const vk   = verseKey(currentBook, currentChapterNum, vnum);
+      if (vk === key) applyAnnotationToEl(el, vk);
+    });
+    renderBhPanel();
+  }
+
+  function navigateToVerse(vkey) {
+    const parts   = vkey.split(':');
+    const book    = parts[0];
+    const chNum   = parseInt(parts[1]);
+    closeBhPanel();
+    const testament = bibleStructure.old[book] ? 'old' : 'new';
+    showBooks(testament);
+    setTimeout(() => {
+      const bookLi = [...document.querySelectorAll('#booksList > ul > li')]
+        .find(li => li.dataset.book === book);
+      if (bookLi) {
+        bookLi.click();
+        setTimeout(() => {
+          const chLi = document.querySelectorAll('.chapter-list li')[chNum - 1];
+          if (chLi) chLi.click();
+        }, 120);
+      }
+    }, 60);
+  }
+
+  function exportAnnotations() {
+    const data = getAnnotations();
+    const keys = Object.keys(data);
+    if (!keys.length) { showToast('Nothing to export yet!'); return; }
+    let txt = 'BIBLE ANNOTATIONS — ' + new Date().toLocaleDateString() + '\n';
+    txt += APP_CREDIT + '\n' + '='.repeat(50) + '\n\n';
+    const bm = keys.filter(k => data[k].bookmark);
+    if (bm.length) { txt += '🔖 BOOKMARKS\n' + '-'.repeat(30) + '\n'; bm.forEach(k => { txt += `${data[k].ref||k}\n${data[k].verseText||''}\n\n`; }); }
+    const notes = keys.filter(k => data[k].note);
+    if (notes.length) { txt += '📝 NOTES\n' + '-'.repeat(30) + '\n'; notes.forEach(k => { txt += `${data[k].ref||k}\n${data[k].verseText||''}\nNote: ${data[k].note}\n\n`; }); }
+    const hl = keys.filter(k => data[k].highlight);
+    if (hl.length) { txt += '🟡 HIGHLIGHTS\n' + '-'.repeat(30) + '\n'; hl.forEach(k => { txt += `[${(data[k].highlight||'').toUpperCase()}] ${data[k].ref||k}\n${data[k].verseText||''}\n\n`; }); }
+    const a  = document.createElement('a');
+    a.href   = 'data:text/plain;charset=utf-8,' + encodeURIComponent(txt);
+    a.download = 'bible-annotations.txt';
+    a.click();
+  }
+
+  // Show summary share button when summary loads
+  function showSummaryShareBtn(show) {
+    const btn = document.getElementById('summaryShareBtn');
+    if (btn) btn.style.display = show ? 'inline-flex' : 'none';
+  }
+
+
   showBooks('old');
   window.addEventListener('load', () => {
     setTimeout(checkForUpdates, 2000);
@@ -874,6 +1418,60 @@
     </div>
   </div>
 </div>
+
+
+<!-- Verse action popup -->
+<div class="verse-popup" id="versePopup">
+  <div class="pop-ref" id="popRef">Genesis 1:1</div>
+  <div class="pop-actions">
+    <button class="pop-btn" id="btnHighlight" onclick="toggleHlSwatches()">🟡 Highlight</button>
+    <button class="pop-btn" id="btnBookmark"  onclick="toggleBookmark()">🔖 Bookmark</button>
+    <button class="pop-btn" id="btnNote"      onclick="toggleNoteInput()">📝 Note</button>
+    <button class="pop-btn" onclick="copyVerse()">📋 Copy</button>
+    <button class="pop-btn" onclick="shareVerse()">↗ Share</button>
+  </div>
+  <div class="hl-swatches" id="hlSwatches">
+    <div class="hl-swatch yellow" onclick="applyHighlight('yellow')" title="Yellow"></div>
+    <div class="hl-swatch green"  onclick="applyHighlight('green')"  title="Green"></div>
+    <div class="hl-swatch pink"   onclick="applyHighlight('pink')"   title="Pink"></div>
+    <div class="hl-swatch blue"   onclick="applyHighlight('blue')"   title="Blue"></div>
+    <div class="hl-swatch clear"  onclick="applyHighlight(null)"     title="Clear">✕</div>
+  </div>
+  <textarea class="pop-note-area" id="noteText" placeholder="Write your note…"></textarea>
+  <button class="pop-save-note" id="saveNoteBtn" onclick="saveNote()">Save Note</button>
+</div>
+
+<!-- Share popup -->
+<div class="share-popup" id="sharePopup">
+  <div class="share-title" id="sharePopupTitle">Share</div>
+  <button class="share-btn" onclick="doShare('copy')"><span>📋</span> Copy to clipboard</button>
+  <button class="share-btn" onclick="doShare('whatsapp')"><span>💬</span> WhatsApp</button>
+  <button class="share-btn" onclick="doShare('native')"><span>↗</span> Share sheet</button>
+  <button class="share-btn" onclick="doShare('email')"><span>📧</span> Email</button>
+  <button class="share-btn" onclick="doShare('image')"><span>🖼</span> Share as image</button>
+</div>
+
+<!-- Bookmarks/Highlights panel -->
+<div class="panel-overlay" id="panelOverlay" onclick="closeBhPanel()"></div>
+<div class="bh-panel" id="bhPanel">
+  <div class="bh-header">
+    <h3>📖 My Study Notes</h3>
+    <button class="bh-close" onclick="closeBhPanel()">✕</button>
+  </div>
+  <div class="bh-tabs">
+    <button class="bh-tab active" id="bhtab-bookmarks"  onclick="switchBhTab('bookmarks')">🔖 Bookmarks</button>
+    <button class="bh-tab"        id="bhtab-notes"      onclick="switchBhTab('notes')">📝 Notes</button>
+    <button class="bh-tab"        id="bhtab-highlights" onclick="switchBhTab('highlights')">🟡 Highlights</button>
+  </div>
+  <div class="bh-body" id="bhBody"></div>
+  <button class="bh-export" onclick="exportAnnotations()">⬇ Export All</button>
+</div>
+
+<!-- Copy toast -->
+<div class="copy-toast" id="copyToast">✅ Copied!</div>
+
+<!-- Hidden canvas for image share -->
+<canvas id="shareCanvas" style="display:none;"></canvas>
 
 </body>
 </html>
