@@ -38,18 +38,18 @@
     .topbar{background:var(--accent);color:#fff;border-bottom:3px solid var(--gold);flex-shrink:0;}
 
     /* Row 1: chalkboard title */
-    .topbar-title{padding:6px 10px;}
+    .topbar-title{padding:8px 14px;}
     .chalkboard{
-      width:100%;padding:10px 20px;
+      width:100%;padding:8px 16px;
       background:radial-gradient(circle at top left,#2a2a2a,#111);
-      border:1px solid #555;border-radius:8px;
+      border:1px solid #444;border-radius:8px;
       text-align:center;
       font-family:'Permanent Marker',cursive;color:#fff;
       display:flex;align-items:center;justify-content:center;gap:10px;
     }
     .chalkboard-icon{font-size:22px;flex-shrink:0;}
-    .chalkboard h1{font-size:clamp(13px,2vw,24px);font-weight:normal;margin-bottom:2px;}
-    .chalkboard p{font-size:clamp(8px,0.95vw,12px);font-style:italic;color:#ccc;}
+    .chalkboard h1{font-size:clamp(11px,1.8vw,22px);font-weight:normal;margin-bottom:2px;}
+    .chalkboard p{font-size:clamp(8px,1vw,12px);font-style:italic;color:#ccc;}
 
     /* Row 2: buttons */
     .topbar-btns{
@@ -92,23 +92,6 @@
     body.dark-mode .testament-tabs li.active{background:var(--gold);color:#1c2b3a;}
 
     #booksList{padding:4px 0;}
-    .menu-footer{border-top:1px solid #eee;padding:8px 0;}
-    body.dark-mode .menu-footer{border-color:#333;}
-    .menu-footer-btn{
-      display:flex;align-items:center;gap:10px;
-      width:100%;padding:11px 16px;
-      background:transparent;border:none;
-      cursor:pointer;font-size:14px;
-      font-family:Arial,sans-serif;
-      color:var(--text-primary,#1a1a1a);
-      text-align:left;transition:background .15s;
-    }
-    .menu-footer-btn:hover{background:#f0ede6;}
-    body.dark-mode .menu-footer-btn{color:#e0e0e0;}
-    body.dark-mode .menu-footer-btn:hover{background:#2a2a2a;}
-    .menu-footer-btn .mfb-icon{font-size:16px;width:20px;text-align:center;}
-    .menu-footer-btn .mfb-label{font-weight:600;}
-    .menu-footer-btn .mfb-sub{font-size:11px;color:#888;margin-left:auto;}
     #booksList ul{list-style:none;}
     #booksList > ul > li{padding:9px 16px;cursor:pointer;font-size:14px;font-family:Arial,sans-serif;transition:background .15s;}
     #booksList > ul > li:hover{background:#f0ede6;}
@@ -227,130 +210,6 @@
     }
     .modal-btn:hover{opacity:.85;}
 
-
-    /* ── Highlight colours ───────────────────────────────────── */
-    .hl-yellow{background:#fff9c4 !important;}
-    .hl-green {background:#c8f7c5 !important;}
-    .hl-pink  {background:#fce4ec !important;}
-    .hl-blue  {background:#e3f2fd !important;}
-    body.dark-mode .hl-yellow{background:#5a5000 !important;}
-    body.dark-mode .hl-green {background:#1a3a1a !important;}
-    body.dark-mode .hl-pink  {background:#3a1a24 !important;}
-    body.dark-mode .hl-blue  {background:#0d2a3a !important;}
-
-    .verse.bookmarked::after{
-      content:'🔖';position:absolute;right:8px;top:8px;font-size:13px;
-    }
-    .verse.has-note::before{
-      content:'📝';position:absolute;right:28px;top:8px;font-size:11px;
-    }
-
-    /* ── Verse action popup ──────────────────────────────────── */
-    .verse-popup{
-      position:fixed;z-index:10002;
-      background:#1c2b3a;border:1px solid #c9a84c;
-      border-radius:12px;padding:14px 16px;
-      box-shadow:0 8px 32px rgba(0,0,0,.4);
-      min-width:240px;max-width:300px;
-      animation:popupIn .18s cubic-bezier(.4,0,.2,1);
-    }
-    @keyframes popupIn{from{opacity:0;transform:scale(.92);}to{opacity:1;transform:scale(1);}}
-    .popup-verse-ref{
-      font-size:11px;color:#c9a84c;font-family:Arial,sans-serif;
-      font-weight:bold;margin-bottom:10px;text-transform:uppercase;
-      letter-spacing:.06em;
-    }
-    .popup-actions{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
-    .popup-action{
-      background:#2a3f54;color:#fff;border:none;
-      padding:7px 10px;border-radius:7px;cursor:pointer;
-      font-size:12px;font-family:Arial,sans-serif;
-      transition:background .15s;flex:1;text-align:center;
-    }
-    .popup-action:hover{background:#3a5570;}
-    .popup-action.active{background:#c9a84c;color:#1c2b3a;font-weight:bold;}
-
-    .hl-swatches{display:flex;gap:6px;margin-bottom:12px;align-items:center;}
-    .hl-swatch{
-      width:26px;height:26px;border-radius:50%;cursor:pointer;
-      border:2px solid transparent;transition:transform .15s,border-color .15s;
-    }
-    .hl-swatch:hover{transform:scale(1.2);}
-    .hl-swatch.selected{border-color:#fff;}
-    .hl-swatch.yellow{background:#fff176;}
-    .hl-swatch.green {background:#a5d6a7;}
-    .hl-swatch.pink  {background:#f48fb1;}
-    .hl-swatch.blue  {background:#90caf9;}
-    .hl-swatch.clear {background:#fff;border-color:#555;font-size:13px;display:flex;align-items:center;justify-content:center;}
-
-    .note-input{
-      width:100%;padding:8px 10px;
-      border:1px solid #3a5570;border-radius:7px;
-      background:#0d1a26;color:#fff;
-      font-size:13px;font-family:'Lora',Georgia,serif;
-      resize:vertical;min-height:70px;
-      margin-bottom:8px;
-    }
-    .note-input::placeholder{color:#666;}
-    .popup-row{display:flex;gap:6px;}
-    .popup-btn{
-      flex:1;background:#c9a84c;color:#1c2b3a;border:none;
-      padding:8px;border-radius:7px;cursor:pointer;
-      font-size:12px;font-weight:bold;font-family:Arial,sans-serif;
-    }
-    .popup-btn.cancel{background:#2a3f54;color:#aaa;}
-    .popup-close{
-      position:absolute;top:10px;right:12px;
-      background:transparent;border:none;color:#666;
-      font-size:16px;cursor:pointer;line-height:1;
-    }
-    .popup-close:hover{color:#fff;}
-
-    /* ── Bookmarks drawer ────────────────────────────────────── */
-    .drawer{
-      position:fixed;right:0;top:0;bottom:0;width:300px;
-      background:#1c2b3a;z-index:10003;
-      transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
-      display:flex;flex-direction:column;border-left:2px solid #c9a84c;
-    }
-    .drawer.open{transform:translateX(0);}
-    .drawer-header{
-      padding:16px;border-bottom:1px solid #2a3f54;
-      display:flex;align-items:center;justify-content:space-between;
-    }
-    .drawer-title{font-family:'Permanent Marker',cursive;color:#c9a84c;font-size:1.1rem;}
-    .drawer-close{background:transparent;border:none;color:#aaa;font-size:20px;cursor:pointer;}
-    .drawer-tabs{display:flex;border-bottom:1px solid #2a3f54;}
-    .drawer-tab{
-      flex:1;padding:10px;text-align:center;cursor:pointer;
-      font-size:12px;font-weight:bold;font-family:Arial,sans-serif;
-      color:#666;border:none;background:transparent;
-      border-bottom:2px solid transparent;transition:all .2s;
-    }
-    .drawer-tab.active{color:#c9a84c;border-bottom-color:#c9a84c;}
-    .drawer-body{flex:1;overflow-y:auto;padding:12px;}
-    .drawer-item{
-      background:#0d1a26;border-radius:8px;padding:10px 12px;
-      margin-bottom:8px;border-left:3px solid #c9a84c;
-      cursor:pointer;transition:background .15s;
-    }
-    .drawer-item:hover{background:#162535;}
-    .drawer-item-ref{font-size:11px;font-weight:bold;color:#c9a84c;margin-bottom:4px;font-family:Arial,sans-serif;}
-    .drawer-item-text{font-size:12px;color:#bbb;line-height:1.5;font-family:'Lora',Georgia,serif;}
-    .drawer-item-note{font-size:11px;color:#888;font-style:italic;margin-top:4px;}
-    .drawer-empty{text-align:center;color:#555;font-size:13px;padding:40px 20px;font-family:Arial,sans-serif;}
-    .drawer-footer{padding:12px;border-top:1px solid #2a3f54;display:flex;gap:8px;}
-    .export-btn{
-      flex:1;background:#c9a84c;color:#1c2b3a;border:none;
-      padding:9px;border-radius:7px;font-weight:bold;
-      font-size:12px;cursor:pointer;font-family:Arial,sans-serif;
-    }
-    .drawer-item-delete{
-      float:right;background:transparent;border:none;
-      color:#555;cursor:pointer;font-size:14px;
-    }
-    .drawer-item-delete:hover{color:#e57373;}
-
     #menuOverlay{display:none;position:fixed;inset:0;z-index:9998;}
     #menuOverlay.active{display:block;}
 
@@ -392,111 +251,6 @@
     .install-cta:hover{opacity:.85;}
     .install-skip{background:transparent;border:1px solid rgba(255,255,255,.2);color:#888;padding:12px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-family:Arial,sans-serif;transition:all .2s;white-space:nowrap;}
     .install-skip:hover{color:#fff;border-color:rgba(255,255,255,.4);}
-
-    /* ── Highlights ───────────────────────────────────────────── */
-    .verse.hl-yellow{background:#fff9c4!important;border-left-color:#f9a825!important;}
-    .verse.hl-green {background:#dcedc8!important;border-left-color:#558b2f!important;}
-    .verse.hl-pink  {background:#fce4ec!important;border-left-color:#c2185b!important;}
-    .verse.hl-blue  {background:#e3f2fd!important;border-left-color:#1565c0!important;}
-    body.dark-mode .verse.hl-yellow{background:#3d3000!important;}
-    body.dark-mode .verse.hl-green {background:#1b3a00!important;}
-    body.dark-mode .verse.hl-pink  {background:#3d0018!important;}
-    body.dark-mode .verse.hl-blue  {background:#00213d!important;}
-
-    /* Bookmark star */
-    .verse .bookmark-star{position:absolute;right:8px;top:8px;font-size:14px;display:none;}
-    .verse.bookmarked .bookmark-star{display:block;}
-
-    /* Note indicator */
-    .verse .note-dot{position:absolute;right:28px;top:10px;width:8px;height:8px;border-radius:50%;background:#c9a84c;display:none;}
-    .verse.has-note .note-dot{display:block;}
-
-    /* ── Verse action popup ───────────────────────────────────── */
-    .verse-popup{
-      position:fixed;z-index:10002;
-      background:var(--bg-primary);
-      border:1px solid var(--border-color);
-      border-radius:12px;
-      box-shadow:0 8px 32px rgba(0,0,0,.25);
-      padding:14px;
-      min-width:240px;
-      display:none;
-    }
-    .verse-popup.show{display:block;}
-    .verse-popup .pop-ref{
-      font-size:12px;font-weight:bold;color:var(--gold);
-      font-family:Arial,sans-serif;margin-bottom:10px;
-      border-bottom:1px solid var(--border-color);padding-bottom:8px;
-    }
-    .verse-popup .pop-section{font-size:11px;color:var(--text-secondary);font-family:Arial,sans-serif;margin-bottom:6px;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;}
-    .verse-popup .hl-swatches{display:flex;gap:6px;margin-bottom:12px;}
-    .verse-popup .swatch{
-      width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;
-      transition:transform .15s,border-color .15s;flex-shrink:0;
-    }
-    .verse-popup .swatch:hover{transform:scale(1.2);}
-    .verse-popup .swatch.active{border-color:#1c2b3a;}
-    .swatch-yellow{background:#fff176;}
-    .swatch-green {background:#aed581;}
-    .swatch-pink  {background:#f48fb1;}
-    .swatch-blue  {background:#90caf9;}
-    .swatch-clear {background:#eee;font-size:14px;display:flex;align-items:center;justify-content:center;color:#888;}
-    body.dark-mode .swatch-clear{background:#333;color:#aaa;}
-
-    .pop-actions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
-    .pop-action{
-      flex:1;min-width:80px;
-      background:var(--bg-secondary);border:1px solid var(--border-color);
-      padding:7px 8px;border-radius:8px;cursor:pointer;
-      font-size:12px;font-family:Arial,sans-serif;color:var(--text-primary);
-      text-align:center;transition:background .15s;
-    }
-    .pop-action:hover{background:var(--gold);color:#1c2b3a;}
-    .pop-action.active{background:var(--gold);color:#1c2b3a;font-weight:bold;}
-
-    .pop-note-area{width:100%;padding:8px;border:1px solid var(--border-color);border-radius:6px;background:var(--bg-scripture);color:var(--text-primary);font-family:'Lora',Georgia,serif;font-size:13px;resize:vertical;min-height:60px;margin-bottom:8px;display:none;}
-    .pop-note-area.show{display:block;}
-    .pop-save-note{background:var(--gold);color:#1c2b3a;border:none;padding:6px 14px;border-radius:6px;font-weight:bold;font-size:12px;cursor:pointer;font-family:Arial,sans-serif;display:none;}
-    .pop-save-note.show{display:block;}
-    .pop-close{position:absolute;top:10px;right:12px;background:transparent;border:none;font-size:16px;cursor:pointer;color:var(--text-secondary);line-height:1;}
-
-    /* ── Bookmarks drawer ─────────────────────────────────────── */
-    .drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10003;display:none;}
-    .drawer-overlay.show{display:block;}
-    .drawer{
-      position:fixed;right:0;top:0;bottom:0;width:300px;max-width:90vw;
-      background:var(--bg-primary);z-index:10004;
-      transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
-      display:flex;flex-direction:column;box-shadow:-4px 0 20px rgba(0,0,0,.2);
-    }
-    .drawer.open{transform:translateX(0);}
-    .drawer-header{
-      background:var(--accent);color:#fff;padding:16px;
-      display:flex;align-items:center;justify-content:space-between;
-      border-bottom:3px solid var(--gold);flex-shrink:0;
-    }
-    .drawer-header h3{font-size:16px;font-family:Arial,sans-serif;}
-    .drawer-close{background:transparent;border:none;color:#fff;font-size:20px;cursor:pointer;}
-    .drawer-tabs{display:flex;border-bottom:1px solid var(--border-color);flex-shrink:0;}
-    .drawer-tab{flex:1;padding:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:bold;font-family:Arial,sans-serif;color:var(--text-secondary);background:transparent;border:none;border-bottom:2px solid transparent;transition:all .2s;}
-    .drawer-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
-    .drawer-body{flex:1;overflow-y:auto;padding:12px;}
-    .drawer-empty{text-align:center;color:var(--text-secondary);font-size:14px;padding:40px 20px;font-style:italic;}
-    .drawer-item{
-      background:var(--bg-secondary);border-radius:8px;padding:10px 12px;
-      margin-bottom:8px;cursor:pointer;
-      border-left:3px solid var(--gold);
-      transition:background .15s;
-    }
-    .drawer-item:hover{background:var(--verse-hover);}
-    .drawer-item .di-ref{font-size:12px;font-weight:bold;color:var(--gold);font-family:Arial,sans-serif;margin-bottom:4px;}
-    .drawer-item .di-text{font-size:13px;color:var(--text-secondary);line-height:1.5;font-style:italic;}
-    .drawer-item .di-note{font-size:12px;color:var(--text-primary);margin-top:6px;padding-top:6px;border-top:1px solid var(--border-color);}
-    .drawer-item .di-del{float:right;background:transparent;border:none;color:#ccc;cursor:pointer;font-size:14px;padding:0;}
-    .drawer-item .di-del:hover{color:#e53935;}
-    .drawer-footer{padding:12px;border-top:1px solid var(--border-color);display:flex;gap:8px;flex-shrink:0;}
-    .export-btn{flex:1;background:var(--accent);color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;cursor:pointer;font-family:Arial,sans-serif;transition:opacity .2s;}
-    .export-btn:hover{opacity:.85;}
   </style>
 </head>
 <body>
@@ -528,23 +282,6 @@
           <li id="tabNew" onclick="showBooks('new')">New Testament</li>
         </ul>
         <div id="booksList"></div>
-        <div class="menu-footer">
-          <button class="menu-footer-btn" onclick="closeMenu();openDrawer('bookmarks')">
-            <span class="mfb-icon">🔖</span>
-            <span class="mfb-label">Bookmarks</span>
-            <span class="mfb-sub" id="bmCount"></span>
-          </button>
-          <button class="menu-footer-btn" onclick="closeMenu();openDrawer('notes')">
-            <span class="mfb-icon">📝</span>
-            <span class="mfb-label">My Notes</span>
-            <span class="mfb-sub" id="noteCount"></span>
-          </button>
-          <button class="menu-footer-btn" onclick="closeMenu();openDrawer('highlights')">
-            <span class="mfb-icon">🟡</span>
-            <span class="mfb-label">Highlights</span>
-            <span class="mfb-sub" id="hlCount"></span>
-          </button>
-        </div>
       </div>
     </div>
 
@@ -842,7 +579,6 @@
     const opening = !menu.classList.contains('open');
     menu.classList.toggle('open', opening);
     overlay.classList.toggle('active', opening);
-    if (opening) updateMenuCounts();
   }
   function closeMenu() {
     document.getElementById('dropdownMenu').classList.remove('open');
@@ -976,21 +712,6 @@
   }
 
   // ── Bible text from local JSON ────────────────────────────────
-  function buildVerseEl(v, book, chNum) {
-    const el = document.createElement('div');
-    el.className = 'verse';
-    el.innerHTML = `<span class="verse-number">${v.verse}</span><span class="verse-text">${esc(v.text)}</span><span class="bookmark-star">🔖</span><span class="note-dot"></span>`;
-    const vkey = verseKey(book, chNum, v.verse);
-    applyAnnotationToEl(el, vkey);
-    // Long-press
-    el.addEventListener('mousedown',  () => startPress(el, vkey));
-    el.addEventListener('touchstart', (e) => { startPress(el, vkey, e); }, {passive:true});
-    el.addEventListener('mouseup',    cancelPress);
-    el.addEventListener('touchend',   cancelPress);
-    el.addEventListener('mouseleave', cancelPress);
-    return el;
-  }
-
   async function loadChapter() {
     if (!currentBook) return;
     const content = document.getElementById('chapterContent');
@@ -1004,8 +725,9 @@
       const verses  = bible[`${jsonBook}:${currentChapterNum}`]
                    || bible[`${jsonBook.replace(/ /g,'')}:${currentChapterNum}`];
       if (verses && verses.length) {
-        content.innerHTML = '';
-        verses.forEach(v => content.appendChild(buildVerseEl(v, currentBook, currentChapterNum)));
+        content.innerHTML = verses.map(v =>
+          `<div class="verse"><span class="verse-number">${v.verse}</span><span class="verse-text">${esc(v.text)}</span></div>`
+        ).join('');
       } else {
         content.innerHTML = `<p style="color:#888;font-style:italic">No verses found for ${esc(currentChapter)} in ${version.toUpperCase()}.</p>`;
       }
@@ -1053,313 +775,6 @@
     p.textContent = inp.value.trim();
     document.getElementById('questionsList').appendChild(p);
     inp.value = '';
-  }
-
-
-  // ── Highlight / Note / Bookmark ──────────────────────────────
-  const STORAGE_KEY = 'bible-annotations';
-
-  function getAnnotations() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
-    catch(e) { return {}; }
-  }
-  function saveAnnotations(data) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }
-  function verseKey(book, chapter, verse) {
-    return `${book}:${chapter}:${verse}`;
-  }
-
-  // Long-press detection
-  let pressTimer = null;
-  let activeVerseEl = null;
-  let activeVerseKey = null;
-
-  function attachVerseInteractions(container) {
-    container.querySelectorAll('.verse').forEach(el => {
-      const vnum  = el.querySelector('.verse-number')?.textContent;
-      const vkey  = verseKey(currentBook, currentChapterNum, vnum);
-
-      // Restore saved state
-      applyAnnotationToEl(el, vkey);
-
-      // Long press — works on both touch and mouse
-      el.addEventListener('mousedown',  () => startPress(el, vkey));
-      el.addEventListener('touchstart', (e) => { startPress(el, vkey, e); }, {passive:true});
-      el.addEventListener('mouseup',    cancelPress);
-      el.addEventListener('touchend',   cancelPress);
-      el.addEventListener('mouseleave', cancelPress);
-    });
-  }
-
-  let pressStartY = 0;
-
-  function startPress(el, vkey, e) {
-    cancelPress();
-    pressStartY = e ? (e.touches ? e.touches[0].clientY : e.clientY) : 0;
-    pressTimer = setTimeout(() => {
-      activeVerseEl  = el;
-      activeVerseKey = vkey;
-      showPopup(el, vkey);
-    }, 500);
-  }
-
-  // Cancel if user scrolls more than 10px
-  document.addEventListener('touchmove', (e) => {
-    if (!pressTimer) return;
-    const y = e.touches[0].clientY;
-    if (Math.abs(y - pressStartY) > 10) cancelPress();
-  }, {passive:true});
-  function cancelPress() {
-    if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
-  }
-
-  function applyAnnotationToEl(el, vkey) {
-    const ann = getAnnotations()[vkey] || {};
-    el.classList.remove('hl-yellow','hl-green','hl-pink','hl-blue','bookmarked','has-note');
-    if (ann.highlight) el.classList.add('hl-' + ann.highlight);
-    if (ann.bookmark)  el.classList.add('bookmarked');
-    if (ann.note)      el.classList.add('has-note');
-  }
-
-  // ── Popup ─────────────────────────────────────────────────────
-  function showPopup(el, vkey) {
-    const popup = document.getElementById('versePopup');
-    const ann   = getAnnotations()[vkey] || {};
-
-    document.getElementById('popupRef').textContent = `${currentBook} ${currentChapterNum}:${vkey.split(':')[2]}`;
-    document.getElementById('hlSwatches').style.display  = 'none';
-    document.getElementById('noteSection').style.display = 'none';
-    document.getElementById('noteText').value = ann.note || '';
-
-    // Show bookmark active state
-    const bbtn = document.getElementById('btnBookmark');
-    bbtn.classList.toggle('active', !!ann.bookmark);
-    bbtn.textContent = ann.bookmark ? '🔖 Bookmarked' : '🔖 Bookmark';
-
-    // Position popup near verse
-    const rect = el.getBoundingClientRect();
-    popup.style.display = 'block';
-    const pw = popup.offsetWidth || 260;
-    let left = Math.min(rect.left, window.innerWidth - pw - 12);
-    let top  = rect.bottom + 8;
-    if (top + 180 > window.innerHeight) top = rect.top - 180;
-    popup.style.left = Math.max(8, left) + 'px';
-    popup.style.top  = Math.max(8, top)  + 'px';
-  }
-
-  function closePopup() {
-    document.getElementById('versePopup').style.display = 'none';
-    document.getElementById('hlSwatches').style.display = 'none';
-    document.getElementById('noteSection').style.display = 'none';
-    activeVerseEl = null; activeVerseKey = null;
-  }
-
-  function showHighlightSwatches() {
-    document.getElementById('noteSection').style.display = 'none';
-    const sw = document.getElementById('hlSwatches');
-    sw.style.display = sw.style.display === 'none' ? 'flex' : 'none';
-  }
-
-  function applyHighlight(color) {
-    if (!activeVerseKey) return;
-    const data = getAnnotations();
-    if (!data[activeVerseKey]) data[activeVerseKey] = {};
-    if (color) data[activeVerseKey].highlight = color;
-    else delete data[activeVerseKey].highlight;
-    saveAnnotations(data);
-    if (activeVerseEl) applyAnnotationToEl(activeVerseEl, activeVerseKey);
-    closePopup();
-  }
-
-  function toggleBookmark() {
-    if (!activeVerseKey) return;
-    const data = getAnnotations();
-    if (!data[activeVerseKey]) data[activeVerseKey] = {};
-    data[activeVerseKey].bookmark = !data[activeVerseKey].bookmark;
-    // Save verse text for drawer display
-    const txt = activeVerseEl?.querySelector('.verse-text')?.textContent || '';
-    data[activeVerseKey].verseText = txt;
-    data[activeVerseKey].ref = `${currentBook} ${currentChapterNum}:${activeVerseKey.split(':')[2]}`;
-    saveAnnotations(data);
-    if (activeVerseEl) applyAnnotationToEl(activeVerseEl, activeVerseKey);
-    const bbtn = document.getElementById('btnBookmark');
-    const isNow = data[activeVerseKey].bookmark;
-    bbtn.classList.toggle('active', isNow);
-    bbtn.textContent = isNow ? '🔖 Bookmarked' : '🔖 Bookmark';
-  }
-
-  function showNoteInput() {
-    document.getElementById('hlSwatches').style.display = 'none';
-    document.getElementById('noteSection').style.display = 'block';
-    document.getElementById('noteText').focus();
-  }
-  function closeNoteInput() {
-    document.getElementById('noteSection').style.display = 'none';
-  }
-  function saveNote() {
-    if (!activeVerseKey) return;
-    const text = document.getElementById('noteText').value.trim();
-    const data = getAnnotations();
-    if (!data[activeVerseKey]) data[activeVerseKey] = {};
-    if (text) {
-      data[activeVerseKey].note = text;
-      data[activeVerseKey].verseText = activeVerseEl?.querySelector('.verse-text')?.textContent || '';
-      data[activeVerseKey].ref = `${currentBook} ${currentChapterNum}:${activeVerseKey.split(':')[2]}`;
-    } else {
-      delete data[activeVerseKey].note;
-    }
-    saveAnnotations(data);
-    if (activeVerseEl) applyAnnotationToEl(activeVerseEl, activeVerseKey);
-    closePopup();
-  }
-
-  // Close popup on outside click
-  window.addEventListener('mousedown', function(e) {
-    const popup = document.getElementById('versePopup');
-    if (popup.style.display !== 'none' && !popup.contains(e.target)) closePopup();
-  });
-
-  // ── Drawer ────────────────────────────────────────────────────
-  let currentDrawerTab = 'bookmarks';
-
-  function updateMenuCounts() {
-    const data = getAnnotations();
-    const keys = Object.keys(data);
-    const bm = keys.filter(k => data[k].bookmark).length;
-    const nt = keys.filter(k => data[k].note).length;
-    const hl = keys.filter(k => data[k].highlight).length;
-    const bmEl = document.getElementById('bmCount');
-    const ntEl = document.getElementById('noteCount');
-    const hlEl = document.getElementById('hlCount');
-    if (bmEl) bmEl.textContent = bm ? `${bm}` : '';
-    if (ntEl) ntEl.textContent = nt ? `${nt}` : '';
-    if (hlEl) hlEl.textContent = hl ? `${hl}` : '';
-  }
-
-  function openDrawer(tab) {
-    if (tab) switchDrawerTab(tab);
-    document.getElementById('drawer').classList.add('open');
-    document.getElementById('drawerOverlay').style.display = 'block';
-    renderDrawer();
-    updateMenuCounts();
-  }
-  function closeDrawer() {
-    document.getElementById('drawer').classList.remove('open');
-    document.getElementById('drawerOverlay').style.display = 'none';
-  }
-  function switchDrawerTab(tab) {
-    currentDrawerTab = tab;
-    ['bookmarks','notes','highlights'].forEach(t => {
-      document.getElementById('dtab' + t.charAt(0).toUpperCase() + t.slice(1))
-        .classList.toggle('active', t === tab);
-    });
-    renderDrawer();
-  }
-
-  function renderDrawer() {
-    const body = document.getElementById('drawerBody');
-    const data = getAnnotations();
-    const keys = Object.keys(data);
-    let html = '';
-
-    if (currentDrawerTab === 'bookmarks') {
-      const bm = keys.filter(k => data[k].bookmark);
-      if (!bm.length) { body.innerHTML = '<div class="drawer-empty">No bookmarks yet.<br>Long-press any verse to bookmark it.</div>'; return; }
-      html = bm.map(k => `
-        <div class="drawer-item" onclick="navigateTo('${k}')">
-          <button class="drawer-item-delete" onclick="event.stopPropagation();deleteAnnotation('${k}','bookmark')">🗑</button>
-          <div class="drawer-item-ref">${data[k].ref || k}</div>
-          <div class="drawer-item-text">${esc(data[k].verseText || '')}</div>
-        </div>`).join('');
-    } else if (currentDrawerTab === 'notes') {
-      const notes = keys.filter(k => data[k].note);
-      if (!notes.length) { body.innerHTML = '<div class="drawer-empty">No notes yet.<br>Long-press any verse to add a note.</div>'; return; }
-      html = notes.map(k => `
-        <div class="drawer-item" onclick="navigateTo('${k}')">
-          <button class="drawer-item-delete" onclick="event.stopPropagation();deleteAnnotation('${k}','note')">🗑</button>
-          <div class="drawer-item-ref">${data[k].ref || k}</div>
-          <div class="drawer-item-text">${esc(data[k].verseText || '')}</div>
-          <div class="drawer-item-note">📝 ${esc(data[k].note)}</div>
-        </div>`).join('');
-    } else {
-      const hl = keys.filter(k => data[k].highlight);
-      if (!hl.length) { body.innerHTML = '<div class="drawer-empty">No highlights yet.<br>Long-press any verse to highlight it.</div>'; return; }
-      const colors = {yellow:'#fff9c4',green:'#c8f7c5',pink:'#fce4ec',blue:'#e3f2fd'};
-      html = hl.map(k => `
-        <div class="drawer-item" style="border-left-color:${colors[data[k].highlight]||'#c9a84c'}" onclick="navigateTo('${k}')">
-          <button class="drawer-item-delete" onclick="event.stopPropagation();deleteAnnotation('${k}','highlight')">🗑</button>
-          <div class="drawer-item-ref">${data[k].ref || k}</div>
-          <div class="drawer-item-text" style="background:${colors[data[k].highlight]||''};padding:4px 6px;border-radius:4px;color:#333;">${esc(data[k].verseText || '')}</div>
-        </div>`).join('');
-    }
-    body.innerHTML = html;
-  }
-
-  function deleteAnnotation(key, type) {
-    const data = getAnnotations();
-    if (data[key]) {
-      delete data[key][type];
-      if (!Object.keys(data[key]).length) delete data[key];
-      saveAnnotations(data);
-    }
-    // Remove visual from verse if visible
-    document.querySelectorAll('.verse').forEach(el => {
-      const vnum = el.querySelector('.verse-number')?.textContent;
-      const vk = verseKey(currentBook, currentChapterNum, vnum);
-      if (vk === key) applyAnnotationToEl(el, vk);
-    });
-    renderDrawer();
-  }
-
-  function navigateTo(vkey) {
-    const parts = vkey.split(':');
-    const book  = parts[0]; const ch = parseInt(parts[1]);
-    closeDrawer();
-    // Find book in structure and select it
-    const testament = bibleStructure.old[book] ? 'old' : 'new';
-    showBooks(testament);
-    setTimeout(() => {
-      const bookLi = [...document.querySelectorAll('#booksList > ul > li')]
-        .find(li => li.dataset.book === book);
-      if (bookLi) { bookLi.click(); setTimeout(() => {
-        const chLi = document.querySelectorAll('.chapter-list li')[ch-1];
-        if (chLi) chLi.click();
-      }, 100); }
-    }, 50);
-  }
-
-  // ── Export ────────────────────────────────────────────────────
-  function exportData() {
-    const data = getAnnotations();
-    const keys = Object.keys(data);
-    if (!keys.length) { alert('Nothing to export yet!'); return; }
-
-    let txt = 'BIBLE ANNOTATIONS EXPORT\n';
-    txt += 'Generated: ' + new Date().toLocaleDateString() + '\n';
-    txt += '='.repeat(50) + '\n\n';
-
-    const bm = keys.filter(k => data[k].bookmark);
-    if (bm.length) {
-      txt += '🔖 BOOKMARKS\n' + '-'.repeat(30) + '\n';
-      bm.forEach(k => { txt += `${data[k].ref || k}\n${data[k].verseText || ''}\n\n`; });
-    }
-    const notes = keys.filter(k => data[k].note);
-    if (notes.length) {
-      txt += '📝 NOTES\n' + '-'.repeat(30) + '\n';
-      notes.forEach(k => { txt += `${data[k].ref || k}\n${data[k].verseText || ''}\nNote: ${data[k].note}\n\n`; });
-    }
-    const hl = keys.filter(k => data[k].highlight);
-    if (hl.length) {
-      txt += '🟡 HIGHLIGHTS\n' + '-'.repeat(30) + '\n';
-      hl.forEach(k => { txt += `[${data[k].highlight?.toUpperCase()}] ${data[k].ref || k}\n${data[k].verseText || ''}\n\n`; });
-    }
-
-    const blob = new Blob([txt], {type:'text/plain'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'bible-annotations-' + new Date().toISOString().slice(0,10) + '.txt';
-    a.click();
   }
 
   // ── Init ──────────────────────────────────────────────────────
@@ -1429,8 +844,6 @@
     });
   });
 
-
-
   showBooks('old');
   window.addEventListener('load', () => {
     setTimeout(checkForUpdates, 2000);
@@ -1461,93 +874,6 @@
     </div>
   </div>
 </div>
-
-<!-- Verse action popup -->
-<div class="verse-popup" id="versePopup">
-  <button class="pop-close" onclick="closePopup()">✕</button>
-  <div class="pop-ref" id="popRef">Genesis 1:1</div>
-  <div class="pop-section">🟡 Highlight</div>
-  <div class="hl-swatches">
-    <div class="swatch swatch-yellow" onclick="applyHighlight('yellow')" title="Yellow"></div>
-    <div class="swatch swatch-green"  onclick="applyHighlight('green')"  title="Green"></div>
-    <div class="swatch swatch-pink"   onclick="applyHighlight('pink')"   title="Pink"></div>
-    <div class="swatch swatch-blue"   onclick="applyHighlight('blue')"   title="Blue"></div>
-    <div class="swatch swatch-clear"  onclick="applyHighlight(null)"     title="Clear">✕</div>
-  </div>
-  <div class="pop-section">Actions</div>
-  <div class="pop-actions">
-    <button class="pop-action" id="popBookmarkBtn" onclick="toggleBookmark()">🔖 Bookmark</button>
-    <button class="pop-action" id="popNoteBtn"     onclick="toggleNoteArea()">📝 Add Note</button>
-  </div>
-  <textarea class="pop-note-area" id="popNoteArea" placeholder="Write your note here…"></textarea>
-  <button class="pop-save-note" id="popSaveNote" onclick="saveNote()">Save Note</button>
-</div>
-
-<!-- Bookmarks / Notes / Highlights drawer -->
-<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
-<div class="drawer" id="drawer">
-  <div class="drawer-header">
-    <h3>📚 My Bible Notes</h3>
-    <button class="drawer-close" onclick="closeDrawer()">✕</button>
-  </div>
-  <div class="drawer-tabs">
-    <button class="drawer-tab active" id="tabBookmarks" onclick="showDrawerTab('bookmarks')">🔖 Bookmarks</button>
-    <button class="drawer-tab"        id="tabNotes"     onclick="showDrawerTab('notes')">📝 Notes</button>
-    <button class="drawer-tab"        id="tabHighlights" onclick="showDrawerTab('highlights')">🟡 Highlights</button>
-  </div>
-  <div class="drawer-body" id="drawerBody"></div>
-  <div class="drawer-footer">
-    <button class="export-btn" onclick="exportData()">⬇ Export All</button>
-    <button class="export-btn" style="background:var(--gold);color:#1c2b3a;" onclick="importData()">⬆ Import</button>
-  </div>
-</div>
-<input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
-
-
-<!-- Verse action popup -->
-<div class="verse-popup" id="versePopup" style="display:none;">
-  <button class="popup-close" onclick="closePopup()">✕</button>
-  <div class="popup-verse-ref" id="popupRef"></div>
-  <div class="popup-actions">
-    <button class="popup-action" id="btnHighlight" onclick="showHighlightSwatches()">🟡 Highlight</button>
-    <button class="popup-action" id="btnNote"      onclick="showNoteInput()">📝 Note</button>
-    <button class="popup-action" id="btnBookmark"  onclick="toggleBookmark()">🔖 Bookmark</button>
-  </div>
-  <!-- Highlight swatches (hidden until clicked) -->
-  <div class="hl-swatches" id="hlSwatches" style="display:none;">
-    <div class="hl-swatch yellow" onclick="applyHighlight('yellow')" title="Yellow"></div>
-    <div class="hl-swatch green"  onclick="applyHighlight('green')"  title="Green"></div>
-    <div class="hl-swatch pink"   onclick="applyHighlight('pink')"   title="Pink"></div>
-    <div class="hl-swatch blue"   onclick="applyHighlight('blue')"   title="Blue"></div>
-    <div class="hl-swatch clear"  onclick="applyHighlight(null)"     title="Remove">✕</div>
-  </div>
-  <!-- Note input (hidden until clicked) -->
-  <div id="noteSection" style="display:none;">
-    <textarea class="note-input" id="noteText" placeholder="Write your note here…"></textarea>
-    <div class="popup-row">
-      <button class="popup-btn cancel" onclick="closeNoteInput()">Cancel</button>
-      <button class="popup-btn" onclick="saveNote()">Save Note</button>
-    </div>
-  </div>
-</div>
-
-<!-- Bookmarks / Notes / Highlights drawer -->
-<div class="drawer" id="drawer">
-  <div class="drawer-header">
-    <span class="drawer-title">📖 My Bible</span>
-    <button class="drawer-close" onclick="closeDrawer()">✕</button>
-  </div>
-  <div class="drawer-tabs">
-    <button class="drawer-tab active" id="dtabBookmarks" onclick="switchDrawerTab('bookmarks')">🔖 Bookmarks</button>
-    <button class="drawer-tab"        id="dtabNotes"     onclick="switchDrawerTab('notes')">📝 Notes</button>
-    <button class="drawer-tab"        id="dtabHighlights" onclick="switchDrawerTab('highlights')">🟡 Highlights</button>
-  </div>
-  <div class="drawer-body" id="drawerBody"></div>
-  <div class="drawer-footer">
-    <button class="export-btn" onclick="exportData()">⬇️ Export All</button>
-  </div>
-</div>
-<div id="drawerOverlay" style="display:none;position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,.4);" onclick="closeDrawer()"></div>
 
 </body>
 </html>
