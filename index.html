@@ -475,6 +475,72 @@
 
     .cq-empty{text-align:center;color:var(--text-secondary);font-size:13px;padding:24px 0;font-family:Arial,sans-serif;}
     .cq-loading{text-align:center;color:var(--text-secondary);font-size:12px;padding:16px 0;font-family:Arial,sans-serif;}
+
+    /* ── Font size control ───────────────────────────────────── */
+    .font-ctrl{
+      display:none;position:fixed;
+      top:0;left:0;right:0;bottom:0;
+      z-index:10003;align-items:flex-end;
+      justify-content:center;
+      background:rgba(0,0,0,.5);
+      padding-bottom:0;
+    }
+    .font-ctrl.show{display:flex;}
+    .font-ctrl-sheet{
+      background:var(--bg-primary);
+      border-radius:20px 20px 0 0;
+      padding:20px 24px 36px;
+      width:100%;max-width:480px;
+      box-shadow:0 -4px 24px rgba(0,0,0,.2);
+    }
+    .font-ctrl-handle{
+      width:40px;height:4px;background:var(--border-color);
+      border-radius:2px;margin:0 auto 16px;
+    }
+    .font-ctrl-title{
+      font-size:14px;font-weight:700;
+      color:var(--text-primary);font-family:Arial,sans-serif;
+      text-align:center;margin-bottom:16px;
+    }
+    .font-size-row{
+      display:flex;align-items:center;
+      gap:12px;margin-bottom:16px;
+    }
+    .font-size-btn{
+      width:40px;height:40px;border-radius:50%;
+      background:var(--bg-secondary);border:1px solid var(--border-color);
+      font-size:20px;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      color:var(--text-primary);font-weight:700;
+      transition:background .15s;flex-shrink:0;
+    }
+    .font-size-btn:hover{background:var(--gold);color:#1c2b3a;border-color:var(--gold);}
+    .font-size-slider{flex:1;accent-color:var(--gold);}
+    .font-size-preview{
+      background:var(--bg-secondary);border-radius:8px;
+      padding:12px 16px;border:1px solid var(--border-color);
+      margin-bottom:16px;
+    }
+    .font-size-preview p{
+      color:var(--text-secondary);line-height:1.7;
+      font-family:'Lora',Georgia,serif;
+    }
+    .font-size-label{
+      text-align:center;font-size:12px;
+      color:var(--text-secondary);font-family:Arial,sans-serif;
+      margin-bottom:12px;
+    }
+    .font-presets{display:flex;gap:8px;justify-content:center;}
+    .font-preset{
+      padding:6px 14px;border-radius:16px;
+      border:1px solid var(--border-color);
+      background:var(--bg-secondary);
+      font-family:Arial,sans-serif;cursor:pointer;
+      color:var(--text-primary);transition:all .15s;
+    }
+    .font-preset:hover,.font-preset.active{
+      background:var(--gold);color:#1c2b3a;border-color:var(--gold);
+    }
   </style>
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -524,6 +590,7 @@
     <div class="topbar-right">
       <button class="votd-btn" onclick="showVerseOfDay()" title="Verse of the Day">✨</button>
       <button class="votd-btn" onclick="openBhPanel('bookmarks')" title="Bookmarks &amp; Highlights">🔖</button>
+      <button class="icon-btn" onclick="openFontCtrl()" title="Font Size">🔤</button>
       <button class="icon-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
     </div>
   </div>
@@ -1851,6 +1918,60 @@ ${APP_CREDIT}`;
   }
 
 
+
+  // ── Font size control ─────────────────────────────────────────
+  const FONT_STORAGE_KEY = 'bible-font-size';
+  const FONT_MIN = 12, FONT_MAX = 24, FONT_DEFAULT = 15;
+
+  function applyFontSize(size) {
+    size = Math.min(FONT_MAX, Math.max(FONT_MIN, parseInt(size)));
+    // Apply to all reading content
+    const targets = [
+      '#summaryContent', '#summaryContent p', '#summaryContent li',
+      '#summaryContent blockquote', '.verse', '.verse-text',
+      '.cq-text', '.cq-reply .cq-text'
+    ];
+    let styleEl = document.getElementById('fontSizeStyle');
+    if (!styleEl) {
+      styleEl = document.createElement('style');
+      styleEl.id = 'fontSizeStyle';
+      document.head.appendChild(styleEl);
+    }
+    styleEl.textContent = targets.map(t => `${t}{font-size:${size}px!important;}`).join('');
+    // Update controls
+    const slider = document.getElementById('fontSlider');
+    const label  = document.getElementById('fontSizeLabel');
+    const preview = document.getElementById('fontPreviewText');
+    if (slider) slider.value = size;
+    if (label)  label.textContent = size + 'px';
+    if (preview) preview.style.fontSize = size + 'px';
+    // Update preset active state
+    document.querySelectorAll('.font-preset').forEach(btn => {
+      btn.classList.toggle('active', parseInt(btn.getAttribute('onclick').match(/\d+/)[0]) === size);
+    });
+    localStorage.setItem(FONT_STORAGE_KEY, size);
+  }
+
+  function setFontSize(size) { applyFontSize(size); }
+  function adjustFont(delta) {
+    const current = parseInt(localStorage.getItem(FONT_STORAGE_KEY) || FONT_DEFAULT);
+    applyFontSize(current + delta);
+  }
+
+  function openFontCtrl() {
+    document.getElementById('fontCtrl').classList.add('show');
+  }
+  function closeFontCtrl(e) {
+    if (e.target === document.getElementById('fontCtrl')) {
+      document.getElementById('fontCtrl').classList.remove('show');
+    }
+  }
+
+  // Load saved font size on startup
+  const savedFont = localStorage.getItem(FONT_STORAGE_KEY);
+  if (savedFont) applyFontSize(savedFont);
+
+
   showBooks('old');
   window.addEventListener('load', () => {
     setTimeout(checkForUpdates, 2000);
@@ -1935,6 +2056,30 @@ ${APP_CREDIT}`;
 
 <!-- Hidden canvas for image share -->
 <canvas id="shareCanvas" style="display:none;"></canvas>
+
+
+<!-- Font size control sheet -->
+<div class="font-ctrl" id="fontCtrl" onclick="closeFontCtrl(event)">
+  <div class="font-ctrl-sheet">
+    <div class="font-ctrl-handle"></div>
+    <div class="font-ctrl-title">🔤 Text Size</div>
+    <div class="font-size-row">
+      <button class="font-size-btn" onclick="adjustFont(-1)">A−</button>
+      <input class="font-size-slider" type="range" id="fontSlider" min="12" max="24" step="1" value="15" oninput="setFontSize(this.value)">
+      <button class="font-size-btn" onclick="adjustFont(1)">A+</button>
+    </div>
+    <div class="font-size-label" id="fontSizeLabel">15px</div>
+    <div class="font-size-preview">
+      <p id="fontPreviewText">In the beginning God created the heaven and the earth. And the earth was without form, and void; and darkness was upon the face of the deep.</p>
+    </div>
+    <div class="font-presets">
+      <button class="font-preset" onclick="setFontSize(13)">Small</button>
+      <button class="font-preset" onclick="setFontSize(15)">Default</button>
+      <button class="font-preset" onclick="setFontSize(18)">Large</button>
+      <button class="font-preset" onclick="setFontSize(21)">XL</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
