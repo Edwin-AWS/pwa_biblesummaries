@@ -590,7 +590,7 @@
     <div class="topbar-right">
       <button class="votd-btn" onclick="showVerseOfDay()" title="Verse of the Day">✨</button>
       <button class="votd-btn" onclick="openBhPanel('bookmarks')" title="Bookmarks &amp; Highlights">🔖</button>
-      <button class="icon-btn" onclick="openFontCtrl()" title="Font Size">🔤</button>
+      <button class="icon-btn" onclick="openFontCtrl()" title="Font Size" style="font-size:14px;font-weight:700;font-family:Arial,sans-serif;color:#c9a84c;">A↕</button>
       <button class="icon-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
     </div>
   </div>
@@ -2078,6 +2078,7 @@ ${APP_CREDIT}`;
       <button class="font-preset" onclick="setFontSize(18)">Large</button>
       <button class="font-preset" onclick="setFontSize(21)">XL</button>
     </div>
+    <button onclick="document.getElementById('fontCtrl').classList.remove('show')" style="margin-top:16px;width:100%;background:#c9a84c;color:#1c2b3a;border:none;padding:12px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;">Save</button>
   </div>
 </div>
 
