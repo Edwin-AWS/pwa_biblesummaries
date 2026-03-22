@@ -1279,6 +1279,8 @@
     document.getElementById('searchInput').value = '';
     document.getElementById('searchResults').style.display = 'none';
     document.getElementById('booksBrowse').style.display = 'block';
+    // Switch to scripture view so Bible panel is visible
+    if (currentView === 'summary') setView('scripture');
     // Navigate to chapter then scroll to verse
     const testament = bibleStructure.old[book] ? 'old' : 'new';
     showBooks(testament);
@@ -1291,21 +1293,23 @@
           const chLi = document.querySelectorAll('.chapter-list li')[chapter - 1];
           if (chLi) {
             chLi.click();
-            // Scroll to specific verse after chapter loads
+            // Wait for chapter to load then scroll to verse
             setTimeout(() => {
-              const verseEls = document.querySelectorAll('#chapterContent .verse');
-              const target   = [...verseEls].find(el => parseInt(el.querySelector('.verse-number')?.textContent) === verse);
+              const rightPanel = document.getElementById('rightPanel');
+              const verseEls   = document.querySelectorAll('#chapterContent .verse');
+              const target     = [...verseEls].find(el => parseInt(el.querySelector('.verse-number')?.textContent) === verse);
               if (target) {
                 target.scrollIntoView({behavior:'smooth', block:'center'});
+                // Flash highlight so user can spot it
                 target.style.transition = 'background .3s';
                 target.style.background = '#fff9c4';
-                setTimeout(() => target.style.background = '', 2000);
+                setTimeout(() => target.style.background = '', 2500);
               }
-            }, 600);
+            }, 800);
           }
-        }, 120);
+        }, 150);
       }
-    }, 60);
+    }, 80);
   }
 
   function showMoreResults(encodedQ) {
