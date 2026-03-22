@@ -1,11 +1,12 @@
 {
+  "id": "com.mateothepreacher.biblesummaries",
   "name": "Bible Summaries by Mateo the Preacher",
   "short_name": "Bible Summaries",
   "description": "Study the Bible with chapter summaries, lessons and prayers by Mateo the Preacher.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#1a1a1a",
-  "theme_color": "#007BFF",
+  "background_color": "#1c2b3a",
+  "theme_color": "#1c2b3a",
   "orientation": "any",
   "icons": [
     {
@@ -19,6 +20,22 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Bible Summaries by Mateo the Preacher"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Bible Summaries by Mateo the Preacher"
     }
   ]
 }
