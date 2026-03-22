@@ -541,6 +541,93 @@
     .font-preset:hover,.font-preset.active{
       background:var(--gold);color:#1c2b3a;border-color:var(--gold);
     }
+
+    /* ── Settings dropdown ───────────────────────────────────── */
+    .settings-wrap{position:relative;}
+    .settings-menu{
+      display:none;position:absolute;top:calc(100% + 8px);right:0;
+      background:var(--bg-primary);border:1px solid var(--border-color);
+      border-radius:12px;min-width:200px;
+      box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:9999;
+      overflow:hidden;
+    }
+    .settings-menu.open{display:block;}
+    .settings-item{
+      display:flex;align-items:center;gap:12px;
+      width:100%;padding:12px 16px;
+      background:transparent;border:none;
+      cursor:pointer;font-size:14px;
+      font-family:Arial,sans-serif;
+      color:var(--text-primary);text-align:left;
+      transition:background .15s;border-bottom:1px solid var(--border-color);
+    }
+    .settings-item:last-child{border-bottom:none;}
+    .settings-item:hover{background:var(--bg-secondary);}
+    .settings-item .si-icon{font-size:18px;width:24px;text-align:center;}
+    .settings-item .si-label{font-weight:600;}
+    .settings-item .si-sub{font-size:11px;color:var(--text-secondary);display:block;margin-top:1px;}
+    .settings-toggle{
+      display:flex;align-items:center;justify-content:space-between;
+      width:100%;padding:12px 16px;
+      background:transparent;border:none;
+      cursor:pointer;font-size:14px;
+      font-family:Arial,sans-serif;
+      color:var(--text-primary);
+      transition:background .15s;
+    }
+    .settings-toggle:hover{background:var(--bg-secondary);}
+    .settings-toggle .st-left{display:flex;align-items:center;gap:12px;}
+    .settings-toggle .si-icon{font-size:18px;width:24px;text-align:center;}
+    .settings-toggle .si-label{font-weight:600;font-size:14px;}
+    .toggle-pill{
+      width:40px;height:22px;border-radius:11px;
+      background:var(--border-color);position:relative;
+      transition:background .25s;flex-shrink:0;
+    }
+    .toggle-pill.on{background:var(--gold);}
+    .toggle-pill::after{
+      content:'';position:absolute;
+      top:3px;left:3px;width:16px;height:16px;
+      border-radius:50%;background:#fff;
+      transition:left .25s;
+    }
+    .toggle-pill.on::after{left:21px;}
+    .settings-btn{
+      background:transparent;border:none;cursor:pointer;
+      color:var(--gold);font-size:18px;padding:6px;
+      border-radius:6px;transition:background .15s;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .settings-btn:hover{background:rgba(201,168,76,.15);}
+
+    /* ── More menu ───────────────────────────────────────────── */
+    .more-menu-wrapper{position:relative;}
+    .more-btn{
+      background:transparent;border:none;cursor:pointer;
+      font-size:22px;font-weight:900;color:#c9a84c;
+      padding:2px 6px;line-height:1;letter-spacing:1px;
+      font-family:Arial,sans-serif;transition:opacity .2s;
+    }
+    .more-btn:hover{opacity:.75;}
+    .more-dropdown{
+      display:none;position:absolute;top:calc(100% + 8px);right:0;
+      background:var(--bg-primary);border:1px solid var(--border-color);
+      border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.2);
+      min-width:200px;z-index:9999;overflow:hidden;
+    }
+    .more-dropdown.open{display:block;animation:moreIn .15s ease;}
+    @keyframes moreIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+    .more-item{
+      display:flex;align-items:center;gap:10px;
+      width:100%;padding:12px 16px;
+      background:transparent;border:none;
+      font-size:13px;font-family:Arial,sans-serif;
+      color:var(--text-primary);cursor:pointer;
+      text-align:left;transition:background .15s;
+      border-bottom:1px solid var(--border-color);
+    }
+    .more-item:last-child{border-bottom:none;}
+    .more-item:hover{background:var(--bg-secondary);}
   </style>
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -589,9 +676,26 @@
 
     <div class="topbar-right">
       <button class="votd-btn" onclick="showVerseOfDay()" title="Verse of the Day">✨</button>
-      <button class="votd-btn" onclick="openBhPanel('bookmarks')" title="Bookmarks &amp; Highlights">🔖</button>
-      <button class="icon-btn" onclick="openFontCtrl()" title="Font Size" style="font-size:14px;font-weight:700;font-family:Arial,sans-serif;color:#c9a84c;">A↕</button>
-      <button class="icon-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
+      <div class="settings-wrap">
+        <button class="settings-btn" onclick="toggleSettingsMenu()" title="More" style="font-size:20px;font-weight:900;color:#c9a84c;letter-spacing:2px;">⋯</button>
+        <div class="settings-menu" id="settingsMenu">
+          <button class="settings-item" onclick="openBhPanel('bookmarks');closeSettingsMenu()">
+            <span class="si-icon">🔖</span>
+            <span><span class="si-label">Bookmarks</span><span class="si-sub">Highlights &amp; Notes</span></span>
+          </button>
+          <button class="settings-item" onclick="openFontCtrl();closeSettingsMenu()">
+            <span class="si-icon" style="font-size:14px;font-weight:700;font-family:Arial,sans-serif;color:var(--gold);">A↕</span>
+            <span><span class="si-label">Font Size</span><span class="si-sub">Adjust text size</span></span>
+          </button>
+          <div class="settings-toggle" onclick="toggleDarkMode();updateDarkToggle()">
+            <div class="st-left">
+              <span class="si-icon">🌙</span>
+              <span class="si-label">Dark Mode</span>
+            </div>
+            <div class="toggle-pill" id="darkTogglePill"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -903,7 +1007,7 @@
     document.getElementById('dropdownMenu').classList.remove('open');
     document.getElementById('menuOverlay').classList.remove('active');
   }
-  function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+  function toggleDarkMode() { document.body.classList.toggle('dark-mode'); updateDarkToggle(); }
 
   // ── Books ─────────────────────────────────────────────────────
   function showBooks(testament) {
@@ -1971,6 +2075,40 @@ ${APP_CREDIT}`;
   const savedFont = localStorage.getItem(FONT_STORAGE_KEY);
   if (savedFont) applyFontSize(savedFont);
 
+
+
+  // ── Settings menu ─────────────────────────────────────────────
+  function toggleSettingsMenu() {
+    document.getElementById('settingsMenu').classList.toggle('open');
+  }
+  function closeSettingsMenu() {
+    document.getElementById('settingsMenu').classList.remove('open');
+  }
+  function updateDarkToggle() {
+    const pill = document.getElementById('darkTogglePill');
+    if (pill) pill.classList.toggle('on', document.body.classList.contains('dark-mode'));
+  }
+  // Close settings on outside click
+  document.addEventListener('click', (e) => {
+    const wrap = document.querySelector('.settings-wrap');
+    if (wrap && !wrap.contains(e.target)) closeSettingsMenu();
+  });
+  // Init dark toggle state
+  window.addEventListener('load', () => updateDarkToggle());
+
+
+
+  // ── More menu ─────────────────────────────────────────────────
+  function toggleMoreMenu() {
+    document.getElementById('moreDropdown').classList.toggle('open');
+  }
+  function closeMoreMenu() {
+    document.getElementById('moreDropdown').classList.remove('open');
+  }
+  document.addEventListener('click', (e) => {
+    const wrapper = document.querySelector('.more-menu-wrapper');
+    if (wrapper && !wrapper.contains(e.target)) closeMoreMenu();
+  });
 
   showBooks('old');
   window.addEventListener('load', () => {
