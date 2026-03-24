@@ -632,6 +632,7 @@
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
 </head>
 <body>
 
@@ -1065,6 +1066,9 @@
     loadSummary(book, chNum);
     if (currentView === 'split' || currentView === 'scripture') loadChapter();
     initCqSection();
+    // Track chapter open
+    logEvent('chapter_opened', { book, chapter: chNum });
+    db.ref(`stats/chapters/${book.replace(/ /g,'_')}_${chNum}`).transaction(n => (n||0)+1);
   }
 
   // ── Summary ───────────────────────────────────────────────────
@@ -1358,10 +1362,19 @@
 
   // ── Firebase init ────────────────────────────────────────────
   const firebaseConfig = {
-    databaseURL: "https://bible-summaries-pwa-default-rtdb.firebaseio.com"
+    apiKey: "AIzaSyB5GfY3uFow17XAPMfy0BQfxCy8zHrk9sM",
+    projectId: "bible-summaries-pwa",
+    databaseURL: "https://bible-summaries-pwa-default-rtdb.firebaseio.com",
+    appId: "1:806352371435:web:b1d19a3b86a3555cfec8ae"
   };
   firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+  const db        = firebase.database();
+  const analytics = firebase.analytics();
+
+  // ── Analytics helpers ─────────────────────────────────────────
+  function logEvent(name, params = {}) {
+    try { analytics.logEvent(name, params); } catch(e) {}
+  }
 
   // ── Identity (name + PIN) ─────────────────────────────────────
   function getIdentity() {
@@ -1528,6 +1541,7 @@
       document.getElementById('cqTextarea').value = '';
       btn.disabled = false;
       stampPostTime();
+      logEvent('comment_posted', { type: cqTab, book: currentBook, chapter: currentChapterNum });
       showToast('Posted! 🙏');
     }).catch(e => {
       btn.disabled = false;
@@ -1770,6 +1784,7 @@
     const bbtn = document.getElementById('btnBookmark');
     bbtn.classList.toggle('active', isNow);
     bbtn.textContent = isNow ? '🔖 Bookmarked' : '🔖 Bookmark';
+    if (isNow) logEvent('verse_bookmarked', { book: currentBook, chapter: currentChapterNum });
     showToast(isNow ? '🔖 Bookmarked!' : 'Bookmark removed');
   }
 
@@ -2223,6 +2238,26 @@ ${APP_CREDIT}`;
   function stampPostTime() {
     localStorage.setItem('last-post-time', Date.now().toString());
   }
+
+
+
+  // ── PWA install tracking ──────────────────────────────────────
+  window.addEventListener('appinstalled', () => {
+    logEvent('pwa_installed');
+    // Also log to Firebase DB for a simple install counter
+    db.ref('stats/installs').transaction(count => (count || 0) + 1);
+    showToast('📲 App installed! Welcome to Bible Summaries 🙏');
+  });
+
+  // Track first visit
+  if (!localStorage.getItem('first-visit-tracked')) {
+    localStorage.setItem('first-visit-tracked', 'true');
+    db.ref('stats/total_visitors').transaction(count => (count || 0) + 1);
+    logEvent('first_visit');
+  }
+
+  // Log page view
+  logEvent('page_view', { page: 'home' });
 
 
   showBooks('old');
