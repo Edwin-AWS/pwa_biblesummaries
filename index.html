@@ -1498,8 +1498,24 @@
   function postCqItem() {
     const identity = getIdentity();
     if (!identity) { showToast('Please set up your name first'); return; }
-    const text = document.getElementById('cqTextarea').value.trim();
-    if (!text) return;
+    const rawText = document.getElementById('cqTextarea').value.trim();
+    if (!rawText) return;
+
+    // Spam cooldown check
+    if (isOnCooldown()) {
+      showToast(`⏳ Please wait ${getCooldownSeconds()} seconds before posting again.`);
+      return;
+    }
+
+    // Profanity check
+    if (containsProfanity(rawText)) {
+      showToast('⚠️ Your message contains inappropriate language. Please revise it.');
+      return;
+    }
+
+    // Auto-sanitize biblical words before saving
+    const text = sanitizeText(rawText);
+
     const btn = document.getElementById('cqPostBtn');
     btn.disabled = true;
     db.ref(cqPath()).push({
@@ -1511,6 +1527,7 @@
     }).then(() => {
       document.getElementById('cqTextarea').value = '';
       btn.disabled = false;
+      stampPostTime();
       showToast('Posted! 🙏');
     }).catch(e => {
       btn.disabled = false;
@@ -1541,9 +1558,23 @@
   function postReply(id) {
     const identity = getIdentity();
     if (!identity) { showToast('Please set up your name first'); return; }
-    const el   = document.getElementById('replyInput-' + id);
-    const text = el.querySelector('textarea').value.trim();
-    if (!text) return;
+    const el     = document.getElementById('replyInput-' + id);
+    const rawText = el.querySelector('textarea').value.trim();
+    if (!rawText) return;
+
+    // Spam cooldown
+    if (isOnCooldown()) {
+      showToast(`⏳ Please wait ${getCooldownSeconds()} seconds before posting again.`);
+      return;
+    }
+
+    // Profanity check
+    if (containsProfanity(rawText)) {
+      showToast('⚠️ Your reply contains inappropriate language. Please revise it.');
+      return;
+    }
+
+    const text = sanitizeText(rawText);
     db.ref(cqPath() + '/' + id + '/replies').push({
       name: identity.name,
       text,
@@ -1551,6 +1582,7 @@
     }).then(() => {
       el.querySelector('textarea').value = '';
       el.classList.remove('show');
+      stampPostTime();
       showToast('Reply posted! 🙏');
     });
   }
@@ -2122,6 +2154,76 @@ ${APP_CREDIT}`;
     const wrapper = document.querySelector('.more-menu-wrapper');
     if (wrapper && !wrapper.contains(e.target)) closeMoreMenu();
   });
+
+
+  // ── Profanity & spam filter ───────────────────────────────────
+
+  // Auto-replace: Bible/legitimate words that look like profanity
+  const SAFE_REPLACEMENTS = [
+    [/\barse\b/gi, 'donkey'],
+    [/\bdamned\b/gi, 'condemned'],
+    [/\bhell\b/gi, 'hell'],        // keep — biblical
+    [/\bbastard\b/gi, 'illegitimate'],
+    [/\bwhore\b/gi, 'harlot'],
+    [/\bwhoremonger\b/gi, 'immoral person'],
+  ];
+
+  // Profanity patterns — catches creative spelling
+  // Each pattern uses character substitution variants
+  const PROFANITY_PATTERNS = [
+    // f-word variants: f*ck, fu(k, fvck, f**k etc
+    /f[\W_]*u[\W_]*c[\W_]*k/i,
+    /f[\W_]*[\*u@][\W_]*c[\W_]*k/i,
+    // s-word variants: sh!t, sh1t, $hit etc
+    /s[\W_]*h[\W_]*[i!1\|][\W_]*t/i,
+    /[\$s][\W_]*h[\W_]*[i!1][\W_]*t/i,
+    // b-word (female dog)
+    /b[\W_]*[i!1][\W_]*t[\W_]*c[\W_]*h/i,
+    // a-word (donkey — but not biblical arse which is replaced above)
+    /a[\W_]*s[\W_]*s/i,
+    /a[\W_]*s[\W_]*s[\W_]*h[\W_]*[o0][\W_]*l[\W_]*e/i,
+    // c-word
+    /c[\W_]*u[\W_]*n[\W_]*t/i,
+    // d-word
+    /d[\W_]*[i!1][\W_]*c[\W_]*k/i,
+    // p-word
+    /p[\W_]*[i!1][\W_]*s[\W_]*s/i,
+    // n-word
+    /n[\W_]*[i!1][\W_]*g[\W_]*g/i,
+    // common spam patterns
+    /(..)\1{4,}/i,   // repeated chars like "aaaaaaa"
+    /https?:\/\//i, // URLs — no links in comments
+  ];
+
+  function sanitizeText(text) {
+    // First apply safe biblical replacements
+    let clean = text;
+    SAFE_REPLACEMENTS.forEach(([pattern, replacement]) => {
+      clean = clean.replace(pattern, replacement);
+    });
+    return clean;
+  }
+
+  function containsProfanity(text) {
+    // Check sanitized version
+    const sanitized = sanitizeText(text);
+    return PROFANITY_PATTERNS.some(pattern => pattern.test(sanitized));
+  }
+
+  // Spam cooldown — 1 minute between posts
+  const COOLDOWN_MS = 60000;
+  function isOnCooldown() {
+    const last = parseInt(localStorage.getItem('last-post-time') || '0');
+    return Date.now() - last < COOLDOWN_MS;
+  }
+  function getCooldownSeconds() {
+    const last = parseInt(localStorage.getItem('last-post-time') || '0');
+    return Math.ceil((COOLDOWN_MS - (Date.now() - last)) / 1000);
+  }
+  function stampPostTime() {
+    localStorage.setItem('last-post-time', Date.now().toString());
+  }
+
 
   showBooks('old');
   window.addEventListener('load', () => {
