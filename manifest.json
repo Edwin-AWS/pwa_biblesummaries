@@ -3,7 +3,7 @@
   "name": "Bible Summaries by Mateo the Preacher",
   "short_name": "Bible Summaries",
   "description": "Study the Bible with chapter summaries, lessons and prayers by Mateo the Preacher.",
-  "start_url": "/files/index.html",
+  "start_url": "/pwa_biblesummaries/index.html",
   "display": "standalone",
   "background_color": "#1c2b3a",
   "theme_color": "#1c2b3a",
