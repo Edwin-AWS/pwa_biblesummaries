@@ -812,22 +812,35 @@
     if (bibleCache[version]) return bibleCache[version];
     const r = await fetch(`./bible/${version}.json`);
     if (!r.ok) throw new Error(`Could not load ${version}.json`);
-    const raw = await r.json();
+    const raw    = await r.json();
     const parsed = {};
-    for (const item of raw) {
-      if (!item.r) continue;
-      const parts = item.r.split(':');
-      if (parts.length < 4) continue;
-      // Last segment = verse, second-to-last = chapter, middle = book (may have spaces)
-      const verseNum = parseInt(parts[parts.length - 1]);
-      if (verseNum === 0) continue;
-      const chapter = parts[parts.length - 2];
-      const book    = parts.slice(1, parts.length - 2).join(' ');
-      const key     = `${book}:${chapter}`;
-      if (!parsed[key]) parsed[key] = [];
-      // Strip all USFM markers: *p *r *q *q2 *b *m *pi *li etc.
-      const cleaned = item.t.replace(/\*[a-z][a-z0-9]*/g, ' ').replace(/\s+/g, ' ').trim();
-      parsed[key].push({ verse: verseNum, text: cleaned });
+
+    // Handle two JSON structures:
+    // KJV:     array of {r: "kjv:Book:Chapter:Verse", t: "text"}
+    // ASV/WEB: object with {verses: [{book_name, chapter, verse, text}]}
+    const items = Array.isArray(raw) ? raw : (raw.verses || []);
+
+    for (const item of items) {
+      // KJV format — has item.r reference string
+      if (item.r) {
+        const parts = item.r.split(':');
+        if (parts.length < 4) continue;
+        const verseNum = parseInt(parts[parts.length - 1]);
+        if (verseNum === 0) continue;
+        const chapter = parts[parts.length - 2];
+        const book    = parts.slice(1, parts.length - 2).join(' ');
+        const key     = `${book}:${chapter}`;
+        if (!parsed[key]) parsed[key] = [];
+        const cleaned = item.t.replace(/\*[a-z][a-z0-9]*/g, ' ').replace(/\s+/g, ' ').trim();
+        parsed[key].push({ verse: verseNum, text: cleaned });
+      }
+      // ASV/WEB format — has item.book_name, item.chapter, item.verse, item.text
+      else if (item.book_name) {
+        const key = `${item.book_name}:${item.chapter}`;
+        if (!parsed[key]) parsed[key] = [];
+        const cleaned = item.text.replace(/\*[a-z][a-z0-9]*/g, ' ').replace(/\s+/g, ' ').trim();
+        parsed[key].push({ verse: item.verse, text: cleaned });
+      }
     }
     bibleCache[version] = parsed;
     return parsed;
